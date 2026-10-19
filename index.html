@@ -102,7 +102,7 @@
         .header {
             background: var(--green-gradient);
             color: white;
-            padding: 36px 28px 32px;
+            padding: 40px 30px 38px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -142,9 +142,9 @@
 
         .header-brands {
             display: grid;
-            grid-template-columns: 60px minmax(0, 1fr) 60px;
+            grid-template-columns: 72px minmax(0, 1fr) 72px;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             width: 100%;
             position: relative;
             z-index: 1;
@@ -152,39 +152,45 @@
 
         .header-brand-logo {
             display: block;
-            width: 60px;
-            height: 60px;
-            padding: 5px;
+            width: 72px;
+            height: 72px;
+            padding: 7px;
             object-fit: contain;
             justify-self: center;
-            border-radius: 14px;
-            background: rgba(255,255,255,0.98);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 18px;
+            background: #ffffff;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
             transition: transform 0.3s ease;
         }
 
         .header-brand-text { min-width: 0; }
         .header h1 {
-            font-size: clamp(1.05rem, 5vw, 1.55rem);
+            font-size: clamp(1.15rem, 5vw, 1.7rem);
             font-weight: 700;
             letter-spacing: -0.02em;
             white-space: nowrap;
         }
         .header p {
-            font-size: 0.82rem;
-            opacity: 0.85;
-            margin-top: 4px;
-            font-weight: 400;
-            letter-spacing: 0.02em;
+            font-size: 0.78rem;
+            opacity: 0.9;
+            margin-top: 6px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
         }
 
+        @media (max-width: 480px) {
+            .header { padding: 26px 18px 26px; }
+            .header-brands { grid-template-columns: 54px minmax(0, 1fr) 54px; gap: 12px; }
+            .header-brand-logo { width: 54px; height: 54px; padding: 5px; border-radius: 14px; }
+            .header h1 { font-size: 1.1rem; letter-spacing: 0; }
+            .header p { font-size: 0.68rem; margin-top: 4px; }
+        }
         @media (max-width: 360px) {
-            .header { padding: 26px 16px 24px; }
-            .header-brands { grid-template-columns: 46px minmax(0, 1fr) 46px; gap: 10px; }
-            .header-brand-logo { width: 46px; height: 46px; padding: 3px; border-radius: 10px; }
-            .header h1 { font-size: 1rem; letter-spacing: 0; }
-            .header p { font-size: 0.7rem; }
+            .header-brands { grid-template-columns: 48px minmax(0, 1fr) 48px; gap: 10px; }
+            .header-brand-logo { width: 48px; height: 48px; padding: 4px; border-radius: 12px; }
+            .header h1 { font-size: 1rem; }
+            .header p { font-size: 0.62rem; }
         }
 
         .tabs {
@@ -388,12 +394,12 @@
         .ficha-header {
             background: var(--green-gradient);
             color: white;
-            padding: 22px 28px;
+            padding: 28px 30px;
             border-radius: 20px 20px 0 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 14px;
+            gap: 16px;
             position: relative;
             overflow: hidden;
             box-shadow: inset 0 -1px 0 rgba(212,172,84,0.4);
@@ -409,13 +415,13 @@
         }
 
         .ficha-brand-logo {
-            width: 56px;
-            height: 56px;
-            padding: 5px;
+            width: 70px;
+            height: 70px;
+            padding: 7px;
             object-fit: contain;
-            border-radius: 14px;
-            background: rgba(255,255,255,0.96);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 18px;
+            background: #ffffff;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
             flex-shrink: 0;
             position: relative;
             z-index: 1;
@@ -430,33 +436,33 @@
         }
 
         .ficha-header h1 {
-            font-size: 1.3rem;
+            font-size: 1.45rem;
             font-weight: 700;
             letter-spacing: 0.02em;
             white-space: nowrap;
             margin: 0;
         }
         .ficha-header p {
-            font-size: 0.8rem;
-            opacity: 0.88;
-            margin-top: 4px;
+            font-size: 0.82rem;
+            opacity: 0.9;
+            margin-top: 6px;
             font-weight: 500;
             letter-spacing: 0.06em;
             text-transform: uppercase;
             white-space: nowrap;
         }
 
-        /* En móviles: logos más chicos pero SIGUEN en las esquinas */
+        /* En móviles: logos un poco más chicos pero siempre visibles y en las esquinas */
         @media (max-width: 520px) {
-            .ficha-header { padding: 16px 14px; border-radius: 16px 16px 0 0; gap: 8px; }
-            .ficha-brand-logo { width: 42px; height: 42px; border-radius: 10px; padding: 3px; }
-            .ficha-header h1 { font-size: 1rem; letter-spacing: 0.01em; }
-            .ficha-header p { font-size: 0.7rem; margin-top: 2px; letter-spacing: 0.04em; }
+            .ficha-header { padding: 20px 16px; border-radius: 16px 16px 0 0; gap: 10px; }
+            .ficha-brand-logo { width: 54px; height: 54px; border-radius: 14px; padding: 5px; }
+            .ficha-header h1 { font-size: 1.12rem; letter-spacing: 0.01em; }
+            .ficha-header p { font-size: 0.72rem; margin-top: 3px; letter-spacing: 0.04em; }
         }
         @media (max-width: 360px) {
-            .ficha-brand-logo { width: 36px; height: 36px; }
-            .ficha-header h1 { font-size: 0.88rem; }
-            .ficha-header p { font-size: 0.64rem; }
+            .ficha-brand-logo { width: 46px; height: 46px; border-radius: 12px; padding: 4px; }
+            .ficha-header h1 { font-size: 0.98rem; }
+            .ficha-header p { font-size: 0.66rem; }
         }
 
         .btn-logout-footer {
@@ -727,28 +733,31 @@
             flex-wrap: wrap;
         }
 
-        /* En teléfonos: los 3 botones ocupan todo el ancho, cada uno la mitad aprox
-           Cerrar sesión ocupa todo el ancho (fila 1), Limpiar y Guardar comparten fila 2 */
+        /* En teléfonos: los 3 botones van cada uno en una fila completa,
+           Guardar Ficha es el más grande y destacado */
         @media (max-width: 600px) {
-            .actions { gap: 10px; }
-            .actions .btn-logout-footer {
-                flex: 1 1 100%;
-                width: 100%;
-                padding: 12px 10px;
-                font-size: 0.84rem;
-                text-align: center;
-                white-space: nowrap;
+            .actions {
+                gap: 10px;
+                flex-direction: column;
             }
+            .actions .btn-logout-footer,
             .actions .btn-secondary,
             .actions .btn-primary-action {
-                flex: 1 1 calc(50% - 5px);
-                width: auto;
-                min-width: 0;
-                padding: 13px 10px;
-                font-size: 0.82rem;
+                flex: 1 1 100%;
+                width: 100%;
+                padding: 14px 12px;
+                font-size: 0.92rem;
                 text-align: center;
                 white-space: nowrap;
             }
+            .actions .btn-primary-action {
+                padding: 16px 12px;
+                font-size: 1rem;
+                font-weight: 700;
+                order: -1; /* Guardar Ficha PRIMERO (arriba) para que sea más visible */
+            }
+            .actions .btn-secondary { order: 1; }
+            .actions .btn-logout-footer { order: 2; }
         }
 
         .btn-secondary {
@@ -977,12 +986,12 @@
             <div class="card">
                 <div class="header">
                     <div class="header-brands">
-                        <img class="header-brand-logo" src="logo-recibar1.png" alt="Logo Recibar 1" width="56" height="56">
+                        <img class="header-brand-logo" src="logo-recibar1.png" alt="Logo Recibar 1" width="72" height="72">
                         <div class="header-brand-text">
                             <h1>RECIBAR C.A.</h1>
                             <p>Corporación de Reciclaje</p>
                         </div>
-                        <img class="header-brand-logo" src="logo-recibar2.png" alt="Logo Recibar 2" width="56" height="56">
+                        <img class="header-brand-logo" src="logo-recibar2.png" alt="Logo Recibar 2" width="72" height="72">
                     </div>
                 </div>
 
@@ -1039,12 +1048,12 @@
     <!-- ==================== FICHA DEL EMPLEADO (a) ==================== -->
     <div id="ficha-screen" class="ficha-wrapper">
         <div class="ficha-header">
-            <img class="ficha-brand-logo ficha-brand-logo--tl" src="logo-recibar1.png" alt="Logo Recibar 1" width="56" height="56">
+            <img class="ficha-brand-logo ficha-brand-logo--tl" src="logo-recibar1.png" alt="Logo Recibar 1" width="72" height="72">
             <div class="ficha-header-text">
                 <h1>FICHA DEL EMPLEADO (A)</h1>
                 <p>RECIBAR C.A.</p>
             </div>
-            <img class="ficha-brand-logo ficha-brand-logo--tr" src="logo-recibar2.png" alt="Logo Recibar 2" width="56" height="56">
+            <img class="ficha-brand-logo ficha-brand-logo--tr" src="logo-recibar2.png" alt="Logo Recibar 2" width="72" height="72">
             <span id="cedula-mostrada" style="display:none;"></span>
         </div>
 
@@ -1837,5 +1846,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4cd83b8e983f471',t:'MTc5MjM4OTEyMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4cd974aaedf7529',t:'MTc5MjM4OTkyNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
