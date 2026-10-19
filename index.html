@@ -2120,7 +2120,7 @@
         //   · Project URL      → SUPABASE_URL
         //   · anon public key  → SUPABASE_ANON_KEY
         // Nunca pegues aquí la clave "service_role" (es secreta).
-        const SUPABASE_URL = 'PEGA_AQUI_TU_PROJECT_URL';
+        const SUPABASE_URL = 'https://hxtufsqcnctklvdslbkz.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nhN9U0Ds9ctoXBtKBpUg3w_yanQdV0k';
 
         let supabaseClient = null;
@@ -2282,6 +2282,193 @@
             if (activa === 'tabla') renderTablaFichas();
             if (activa === 'vistaprevia') renderNomina();
             if (activa === 'graficas') renderGraficas();
+        }
+
+
+        // ============================================================
+        // SIMULACIÓN TEMPORAL — 10 FICHAS DE PRUEBA (QUITAR DESPUÉS)
+        // ============================================================
+        // Al entrar al panel de administrador se cargan automáticamente
+        // en Supabase 10 trabajadores ficticios, identificados por las
+        // cédulas 90000001 a 90000010 y por datos._simulacion = true.
+        // Para desactivar sin borrar: cambia el true por false.
+        // Para quitar del todo: usa el index-SIN-simulacion.html y
+        // borra esas 10 cédulas en Supabase (quitar-simulacion.sql).
+        const SIMULACION_TEMPORAL_ACTIVA = true;
+
+        function crearFichasSimuladas() {
+            const ahora = new Date().toISOString();
+            const fam = (nombre, sexo, fecha_nac, edad, extra = {}) => ({
+                nombre, cedula: '', telefono: '', sexo, fecha_nac, edad,
+                discapacidad: 'no', disc_cual: '', disc_tratada: '',
+                disc_requiere: '', disc_tratamiento: '', ...extra
+            });
+            const hijo = (nombre, sexo, fecha_nac, edad, ano_estudia, extra = {}) =>
+                fam(nombre, sexo, fecha_nac, edad, { ano_estudia, ...extra });
+
+            return [
+                {
+                    cedula_ficha: '90000001', _cedula: '90000001', _simulacion: true, _fecha_registro: ahora,
+                    nombres: 'Mariana Alejandra Torres Rojas', estado_civil: 'casado', sexo: 'femenino',
+                    telefonos: ['0414-8102233'], lugar_nacimiento: 'Barcelona, Anzoátegui', fecha_nacimiento: '1992-04-18', edad: 34,
+                    nivel_estudio: 'universitario', correo: 'Mariana Alejandra Torres@example.com', municipio: 'simon_bolivar', municipio_otro: '',
+                    parroquia: 'El Carmen', parroquia_otro: '', comuna: 'MI GRAN BARCELONA', comuna_otro: '',
+                    direccion: 'Av. Intercomunal, Residencias El Parque, Barcelona',
+                    condicion_salud: 'no', condicion_cual: '', condicion_tipo: '', condicion_tratada: '', condicion_requiere: '', condicion_tratamiento: '', condicion_porvida: '', condicion_tiempo: '',
+                    familiares: {
+                        progenitores: [fam('Rosa Rojas de Torres', 'femenino', '1965-02-11', 61), fam('José Torres', 'masculino', '1962-07-19', 64)],
+                        pareja: [fam('Andrés Luis Herrera', 'masculino', '1990-10-05', 36)],
+                        hijos: [hijo('Sofía Herrera Torres', 'femenino', '2016-05-21', 10, '5to grado'), hijo('Mateo Herrera Torres', 'masculino', '2019-09-14', 7, '2do grado')]
+                    }
+                },
+                {
+                    cedula_ficha: '90000002', _cedula: '90000002', _simulacion: true, _fecha_registro: ahora,
+                    nombres: 'José Gregorio Hernández', estado_civil: 'soltero', sexo: 'masculino',
+                    telefonos: ['0424-9134455', '0412-6227788'], lugar_nacimiento: 'El Tigre, Anzoátegui', fecha_nacimiento: '1988-09-02', edad: 38,
+                    nivel_estudio: 'bachiller', correo: '', municipio: 'simon_bolivar', municipio_otro: '',
+                    parroquia: 'San Cristóbal', parroquia_otro: '', comuna: 'JUANA PETRONILA HERNANDEZ', comuna_otro: '',
+                    direccion: 'Calle Sucre, Sector Pueblo Nuevo, Barcelona',
+                    condicion_salud: 'si', condicion_cual: 'Hipertensión arterial', condicion_tipo: 'salud', condicion_tratada: 'si', condicion_requiere: 'si', condicion_tratamiento: 'Medicación diaria', condicion_porvida: 'si', condicion_tiempo: '',
+                    familiares: {
+                        progenitores: [fam('Carmen Maita de Hernández', 'femenino', '1960-01-30', 66, { discapacidad: 'si', disc_cual: 'Problemas de movilidad', disc_tratada: 'si', disc_requiere: 'si', disc_tratamiento: 'Fisioterapia' })],
+                        pareja: [],
+                        hijos: [hijo('Gabriel José Hernández', 'masculino', '2013-03-08', 13, '2do año')]
+                    }
+                },
+                {
+                    cedula_ficha: '90000003', _cedula: '90000003', _simulacion: true, _fecha_registro: ahora,
+                    nombres: 'Yuleidis Josefina Pérez', estado_civil: 'concubino', sexo: 'femenino',
+                    telefonos: ['0416-2058899'], lugar_nacimiento: 'Puerto La Cruz, Anzoátegui', fecha_nacimiento: '1997-01-25', edad: 29,
+                    nivel_estudio: 'tsu', correo: 'yuleidis José Gregorio Hernández@example.com', municipio: 'otro', municipio_otro: 'Juan Antonio Sotillo',
+                    parroquia: '', parroquia_otro: 'Puerto La Cruz', comuna: '', comuna_otro: 'Comuna Alberto Lovera',
+                    direccion: 'Calle Democracia, Puerto La Cruz',
+                    condicion_salud: 'no', condicion_cual: '', condicion_tipo: '', condicion_tratada: '', condicion_requiere: '', condicion_tratamiento: '', condicion_porvida: '', condicion_tiempo: '',
+                    familiares: {
+                        progenitores: [fam('Milagros Josefina Pérez', 'femenino', '1970-06-16', 56), fam('Ramón José Gregorio Hernández', 'masculino', '1968-11-27', 57)],
+                        pareja: [fam('Keiber José Gregorio Hernández', 'masculino', '1995-04-12', 31)],
+                        hijos: [hijo('ashley Carolina Rivas', 'femenino', '2015-08-03', 11, '6to grado'), hijo('Thiago José Gregorio Hernández Rivas', 'masculino', '2018-12-19', 7, '2do grado'), hijo('Emma José Gregorio Hernández Rivas', 'femenino', '2021-06-25', 5, 'Preescolar')]
+                    }
+                },
+                {
+                    cedula_ficha: '90000004', _cedula: '90000004', _simulacion: true, _fecha_registro: ahora,
+                    nombres: 'Carlos Eduardo Rivas', estado_civil: 'casado', sexo: 'masculino',
+                    telefonos: ['0414-7771200'], lugar_nacimiento: 'Anaco, Anzoátegui', fecha_nacimiento: '1983-06-11', edad: 43,
+                    nivel_estudio: 'universitario', correo: 'Carlos Eduardo Rivas@example.com', municipio: 'simon_bolivar', municipio_otro: '',
+                    parroquia: 'El Carmen', parroquia_otro: '', comuna: 'SOCIALISTA EL VIÑEDO', comuna_otro: '',
+                    direccion: 'Urb. El Viñedo, Calle 4, Barcelona',
+                    condicion_salud: 'si', condicion_cual: 'Diabetes tipo 2', condicion_tipo: 'salud', condicion_tratada: 'si', condicion_requiere: 'si', condicion_tratamiento: 'Insulina y dieta controlada', condicion_porvida: 'si', condicion_tiempo: '',
+                    familiares: {
+                        progenitores: [fam('Luisa Elena Guilarte de Guilarte', 'femenino', '1955-09-09', 71)],
+                        pareja: [fam('Daniela José Gregorio Hernández Guilarte', 'femenino', '1986-02-20', 40)],
+                        hijos: [hijo('Carlos Eduardo Rivas Jr.', 'masculino', '2011-07-17', 15, '4to año'), hijo('Valeria José Gregorio Hernández Guilarte', 'femenino', '2014-10-29', 11, '6to grado')]
+                    }
+                },
+                {
+                    cedula_ficha: '90000005', _cedula: '90000005', _simulacion: true, _fecha_registro: ahora,
+                    nombres: 'Ana María Fernández', estado_civil: 'viudo', sexo: 'femenino',
+                    telefonos: ['0426-3849911'], lugar_nacimiento: 'Cantaura, Anzoátegui', fecha_nacimiento: '1979-12-03', edad: 46,
+                    nivel_estudio: 'secundaria', correo: '', municipio: 'otro', municipio_otro: 'Anaco',
+                    parroquia: '', parroquia_otro: 'Anaco', comuna: '', comuna_otro: 'Comuna Hugo Chávez',
+                    direccion: 'Sector Las Palmas, Anaco',
+                    condicion_salud: 'no', condicion_cual: '', condicion_tipo: '', condicion_tratada: '', condicion_requiere: '', condicion_tratamiento: '', condicion_porvida: '', condicion_tiempo: '',
+                    familiares: {
+                        progenitores: [fam('Pedro Antonio López Fernández', 'masculino', '1950-05-23', 76, { discapacidad: 'si', disc_cual: 'Discapacidad visual', disc_tratada: 'si', disc_requiere: 'no' })],
+                        pareja: [],
+                        hijos: [hijo('María José Gregorio Hernández Fernández Brito', 'femenino', '2008-04-06', 18, '5to año')]
+                    }
+                },
+                {
+                    cedula_ficha: '90000006', _cedula: '90000006', _simulacion: true, _fecha_registro: ahora,
+                    nombres: 'Luis Fernando Gómez', estado_civil: 'soltero', sexo: 'masculino',
+                    telefonos: ['0412-9056633'], lugar_nacimiento: 'Barcelona, Anzoátegui', fecha_nacimiento: '2000-03-15', edad: 26,
+                    nivel_estudio: 'tsu', correo: 'lgomez.prueba@example.com', municipio: 'simon_bolivar', municipio_otro: '',
+                    parroquia: 'Naricual', parroquia_otro: '', comuna: 'SIMON BOLIVAR NARICUAL', comuna_otro: '',
+                    direccion: 'Sector Naricual, Calle Principal, Barcelona',
+                    condicion_salud: 'si', condicion_cual: 'Asma', condicion_tipo: 'salud', condicion_tratada: 'si', condicion_requiere: 'si', condicion_tratamiento: 'Inhalador', condicion_porvida: 'si', condicion_tiempo: '',
+                    familiares: {
+                        progenitores: [fam('Nancy Gómez de Carvajal', 'femenino', '1972-08-14', 54), fam('Fernando Javier Carvajal', 'masculino', '1970-01-08', 56)],
+                        pareja: [],
+                        hijos: []
+                    }
+                },
+                {
+                    cedula_ficha: '90000007', _cedula: '90000007', _simulacion: true, _fecha_registro: ahora,
+                    nombres: 'Katherine Vanessa Rojas', estado_civil: 'casado', sexo: 'femenino',
+                    telefonos: ['0414-1928877', '0424-6102938'], lugar_nacimiento: 'Lechería, Anzoátegui', fecha_nacimiento: '1990-08-27', edad: 36,
+                    nivel_estudio: 'universitario', correo: 'Katherine Vanessa Rojas@example.com', municipio: 'otro', municipio_otro: 'Diego Bautista Urbaneja',
+                    parroquia: '', parroquia_otro: 'Lechería', comuna: '', comuna_otro: 'Comuna Don Humberto Arreaza',
+                    direccion: 'Av. Principal de Lechería, Residencias Mar Azul',
+                    condicion_salud: 'no', condicion_cual: '', condicion_tipo: '', condicion_tratada: '', condicion_requiere: '', condicion_tratamiento: '', condicion_porvida: '', condicion_tiempo: '',
+                    familiares: {
+                        progenitores: [fam('Miriam Antonia Salazar de Salazar', 'femenino', '1963-03-21', 63), fam('Héctor Rafael Salazar', 'masculino', '1961-10-11', 65)],
+                        pareja: [fam('Ricardo José Gregorio Hernández', 'masculino', '1989-06-30', 37)],
+                        hijos: [
+                            hijo('Ricardo José Gregorio Hernández Andrés Salazar Ortiz', 'masculino', '2012-02-09', 14, '3er año'),
+                            hijo('Camila José Gregorio Hernández Salazar Ortiz', 'femenino', '2015-11-16', 10, '5to grado'),
+                            hijo('Diego José Gregorio Hernández Salazar Ortiz', 'masculino', '2019-04-24', 7, '2do grado'),
+                            hijo('Lucía José Gregorio Hernández Salazar Ortiz', 'femenino', '2022-08-31', 4, 'Preescolar')
+                        ]
+                    }
+                },
+                {
+                    cedula_ficha: '90000008', _cedula: '90000008', _simulacion: true, _fecha_registro: ahora,
+                    nombres: 'Pedro Antonio López', estado_civil: 'concubino', sexo: 'masculino',
+                    telefonos: ['0416-7183045'], lugar_nacimiento: 'Clarines, Anzoátegui', fecha_nacimiento: '1995-05-19', edad: 31,
+                    nivel_estudio: 'primaria', correo: '', municipio: 'simon_bolivar', municipio_otro: '',
+                    parroquia: 'Bergantín', parroquia_otro: '', comuna: 'AGROECOLOGICA Y TURISTICA BERGANTIN', comuna_otro: '',
+                    direccion: 'Sector Bergantín, Calle Bolívar, Barcelona',
+                    condicion_salud: 'si', condicion_cual: 'Discapacidad visual', condicion_tipo: 'discapacidad', condicion_tratada: 'si', condicion_requiere: 'no', condicion_tratamiento: '', condicion_porvida: 'si', condicion_tiempo: '',
+                    familiares: {
+                        progenitores: [fam('Juana Bautista Rondón de Rondón', 'femenino', '1967-12-05', 58)],
+                        pareja: [fam('Yoselin Coromoto Rondón', 'femenino', '1996-09-18', 30)],
+                        hijos: [hijo('Pedro Antonio López Jr.', 'masculino', '2017-01-13', 9, '4to grado', { discapacidad: 'si', disc_cual: 'Dificultad auditiva leve', disc_tratada: 'si', disc_requiere: 'si', disc_tratamiento: 'Terapia de lenguaje' }), hijo('Rosa Pedro Antonio López', 'femenino', '2020-10-07', 6, '1er grado')]
+                    }
+                },
+                {
+                    cedula_ficha: '90000009', _cedula: '90000009', _simulacion: true, _fecha_registro: ahora,
+                    nombres: 'Gabriela Isabel Sánchez', estado_civil: 'soltero', sexo: 'femenino',
+                    telefonos: ['0424-8274610'], lugar_nacimiento: 'Barcelona, Anzoátegui', fecha_nacimiento: '2002-11-08', edad: 23,
+                    nivel_estudio: 'bachiller', correo: 'Gabriela Isabel Sánchez@example.com', municipio: 'simon_bolivar', municipio_otro: '',
+                    parroquia: 'Caigua', parroquia_otro: '', comuna: 'INDIGENA CUMANAGOTO SAN BERNARDINO', comuna_otro: '',
+                    direccion: 'Sector Caigua, Calle Libertad, Barcelona',
+                    condicion_salud: 'no', condicion_cual: '', condicion_tipo: '', condicion_tratada: '', condicion_requiere: '', condicion_tratamiento: '', condicion_porvida: '', condicion_tiempo: '',
+                    familiares: {
+                        progenitores: [fam('Isabel Cristina Mora de Mora', 'femenino', '1975-07-02', 51), fam('Jorge Sánchez', 'masculino', '1973-04-28', 53)],
+                        pareja: [],
+                        hijos: []
+                    }
+                },
+                {
+                    cedula_ficha: '90000010', _cedula: '90000010', _simulacion: true, _fecha_registro: ahora,
+                    nombres: 'Miguel Ángel Mendoza', estado_civil: 'casado', sexo: 'masculino',
+                    telefonos: ['0414-3095521'], lugar_nacimiento: 'Guanta, Anzoátegui', fecha_nacimiento: '1975-02-14', edad: 51,
+                    nivel_estudio: 'secundaria', correo: 'Miguel Ángel Mendoza@example.com', municipio: 'otro', municipio_otro: 'Guanta',
+                    parroquia: '', parroquia_otro: 'Guanta', comuna: '', comuna_otro: 'Comuna Francisco de Miranda',
+                    direccion: 'Calle Real, Sector El Centro, Guanta',
+                    condicion_salud: 'si', condicion_cual: 'Artritis', condicion_tipo: 'salud', condicion_tratada: 'si', condicion_requiere: 'si', condicion_tratamiento: 'Medicación y fisioterapia', condicion_porvida: 'si', condicion_tiempo: '',
+                    familiares: {
+                        progenitores: [fam('Elena Mendoza de Araya', 'femenino', '1948-06-17', 78)],
+                        pareja: [fam('Sandra José Gregorio Hernández Araya', 'femenino', '1978-03-26', 48)],
+                        hijos: [hijo('Miguel Ángel Mendoza', 'masculino', '2005-09-12', 21, 'Universitario'), hijo('Andrea José Gregorio Hernández Araya', 'femenino', '2009-01-20', 17, '5to año'), hijo('José Gregorio Hernández Miguel Araya', 'masculino', '2013-12-01', 12, '1er año')]
+                    }
+                }
+            ];
+        }
+
+        async function cargarSimulacionTemporal() {
+            if (!SIMULACION_TEMPORAL_ACTIVA) return;
+            const simuladas = crearFichasSimuladas();
+            for (const ficha of simuladas) {
+                try {
+                    await guardarFichaEnSupabase(ficha);
+                } catch (err) {
+                    // Si Supabase falla, al menos se muestran en pantalla esta vez.
+                    console.warn('[Simulación temporal] No se pudo guardar en Supabase:', ficha.cedula_ficha, err);
+                    const idx = fichasCache.findIndex(f => (f.cedula_ficha || '').toString() === ficha.cedula_ficha);
+                    if (idx >= 0) fichasCache[idx] = ficha; else fichasCache.push(ficha);
+                }
+            }
+            console.info('[Simulación temporal] 10 fichas ficticias cargadas (cédulas 90000001-90000010).');
         }
 
         document.getElementById('ficha-form').addEventListener('submit', async function(e) {
@@ -2832,8 +3019,10 @@
         const __originalMostrarAdmin = mostrarAdmin;
         mostrarAdmin = async function(email) {
             __originalMostrarAdmin(email);
-            // Traer las fichas reales desde Supabase (ya no se cargan ejemplos)
+            // Traer las fichas reales desde Supabase
             await cargarFichasDesdeSupabase();
+            // TEMPORAL: cargar también las 10 fichas de simulación
+            await cargarSimulacionTemporal();
             switchAdminTab('tabla');
         };
 
@@ -2848,5 +3037,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce2cbeed47c5de',t:'MTc5MjM5NjA0Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce3c742eab7458',t:'MTc5MjM5NjY5MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
