@@ -180,17 +180,17 @@
         }
 
         @media (max-width: 480px) {
-            .header { padding: 26px 18px 26px; }
-            .header-brands { grid-template-columns: 54px minmax(0, 1fr) 54px; gap: 12px; }
-            .header-brand-logo { width: 54px; height: 54px; padding: 5px; border-radius: 14px; }
-            .header h1 { font-size: 1.1rem; letter-spacing: 0; }
-            .header p { font-size: 0.68rem; margin-top: 4px; }
-        }
-        @media (max-width: 360px) {
+            .header { padding: 24px 14px 22px; }
             .header-brands { grid-template-columns: 48px minmax(0, 1fr) 48px; gap: 10px; }
             .header-brand-logo { width: 48px; height: 48px; padding: 4px; border-radius: 12px; }
-            .header h1 { font-size: 1rem; }
-            .header p { font-size: 0.62rem; }
+            .header h1 { font-size: 1rem; letter-spacing: 0; }
+            .header p { font-size: 0.66rem; margin-top: 3px; }
+        }
+        @media (max-width: 360px) {
+            .header-brands { grid-template-columns: 42px minmax(0, 1fr) 42px; gap: 8px; }
+            .header-brand-logo { width: 42px; height: 42px; padding: 3px; border-radius: 10px; }
+            .header h1 { font-size: 0.88rem; white-space: normal; line-height: 1.15; }
+            .header p { font-size: 0.6rem; margin-top: 3px; }
         }
 
         .tabs {
@@ -454,15 +454,20 @@
 
         /* En móviles: logos un poco más chicos pero siempre visibles y en las esquinas */
         @media (max-width: 520px) {
-            .ficha-header { padding: 20px 16px; border-radius: 16px 16px 0 0; gap: 10px; }
-            .ficha-brand-logo { width: 54px; height: 54px; border-radius: 14px; padding: 5px; }
-            .ficha-header h1 { font-size: 1.12rem; letter-spacing: 0.01em; }
-            .ficha-header p { font-size: 0.72rem; margin-top: 3px; letter-spacing: 0.04em; }
+            .ficha-header { padding: 16px 12px; border-radius: 16px 16px 0 0; gap: 8px; }
+            .ficha-brand-logo { width: 44px; height: 44px; border-radius: 12px; padding: 4px; }
+            .ficha-header h1 {
+                font-size: 0.88rem;
+                letter-spacing: 0.01em;
+                white-space: normal;
+                line-height: 1.15;
+            }
+            .ficha-header p { font-size: 0.62rem; margin-top: 3px; letter-spacing: 0.04em; }
         }
-        @media (max-width: 360px) {
-            .ficha-brand-logo { width: 46px; height: 46px; border-radius: 12px; padding: 4px; }
-            .ficha-header h1 { font-size: 0.98rem; }
-            .ficha-header p { font-size: 0.66rem; }
+        @media (max-width: 380px) {
+            .ficha-brand-logo { width: 38px; height: 38px; border-radius: 10px; padding: 3px; }
+            .ficha-header h1 { font-size: 0.78rem; letter-spacing: 0; }
+            .ficha-header p { font-size: 0.58rem; margin-top: 2px; }
         }
 
         .btn-logout-footer {
@@ -1846,5 +1851,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4cd974aaedf7529',t:'MTc5MjM4OTkyNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4cda161bf438565',t:'MTc5MjM5MDMzOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
