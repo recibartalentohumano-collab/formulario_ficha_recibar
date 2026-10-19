@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RECIBAR C.A. - Acceso</title>
+    <style>
+        :root {
+            --primary: #1a7a3c;
+            --primary-dark: #145c2e;
+            --primary-light: #e8f5e9;
+            --accent: #f4a261;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --error: #dc2626;
+            --white: #ffffff;
+            --shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0f9ff 100%);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        /* ========== LOGIN ========== */
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container { width: 100%; max-width: 420px; }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+
+        .header-brands {
+            display: grid;
+            grid-template-columns: 56px minmax(0, 1fr) 56px;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .header-brand-logo {
+            display: block;
+            width: 56px;
+            height: 56px;
+            padding: 4px;
+            object-fit: contain;
+            justify-self: center;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.96);
+        }
+
+        .header-brand-text { min-width: 0; }
+        .header h1 {
+            font-size: clamp(1rem, 5vw, 1.5rem);
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .header p { font-size: 0.9rem; opacity: 0.9; margin-top: 4px; line-height: 1.2; }
+
+        @media (max-width: 360px) {
+            .header { padding: 24px 16px; }
+            .header-brands { grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 8px; }
+            .header-brand-logo { width: 44px; height: 44px; padding: 3px; }
+            .header h1 { font-size: 1rem; letter-spacing: 0; }
+            .header p { font-size: 0.72rem; }
+        }
+
+        .tabs { display: flex; border-bottom: 1px solid var(--border); }
+
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab.active { color: var(--primary); }
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--primary);
+        }
+        .tab:hover:not(.active) { background: var(--primary-light); color: var(--primary); }
+
+        .form-container { padding: 28px 24px 32px; }
+        .form { display: none; }
+        .form.active { display: block; }
+
+        .form-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 122, 60, 0.15);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        textarea { resize: vertical; min-height: 80px; }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 8px;
+        }
+        .btn:hover { background: var(--primary-dark); }
+        .btn:active { transform: scale(0.98); }
+
+        .error-msg {
+            background: #fef2f2;
+            color: var(--error);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+            display: none;
+            border: 1px solid #fecaca;
+        }
+        .error-msg.show { display: block; }
+
+        .success-msg {
+            background: #f0fdf4;
+            color: var(--primary-dark);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+            display: none;
+            border: 1px solid #bbf7d0;
+        }
+        .success-msg.show { display: block; }
+
+        .footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+        }
+
+        .hint { font-size: 0.8rem; color: var(--text-light); margin-top: 6px; }
+
+        /* ========== FICHA EMPLEADO ========== */
+        .ficha-wrapper {
+            display: none;
+            padding: 16px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .ficha-wrapper.show { display: block; }
+
+        .ficha-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px 24px;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .ficha-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .ficha-header .logo {
+            width: 48px;
+            height: 48px;
+            margin: 0;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .ficha-header h1 { font-size: 1.25rem; }
+        .ficha-header p { font-size: 0.8rem; opacity: 0.9; margin-top: 2px; }
+
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: auto;
+            margin: 0;
+        }
+        .btn-logout:hover { background: rgba(255,255,255,0.3); }
+
+        .ficha-card {
+            background: var(--white);
+            border-radius: 0 0 16px 16px;
+            box-shadow: var(--shadow);
+            padding: 24px 20px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .section:last-of-type { border-bottom: none; margin-bottom: 16px; }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title span {
+            background: var(--primary-light);
+            color: var(--primary);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 640px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .form-group.full { grid-column: 1 / -1; }
+
+        .conditional {
+            display: none;
+            margin-top: 12px;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+        .conditional.show { display: block; }
+
+        /* Teléfonos múltiples */
+        .telefonos-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .telefono-item {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .telefono-item input {
+            flex: 1;
+        }
+        .btn-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .btn-icon.add {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .btn-icon.add:hover { background: var(--primary); color: white; }
+        .btn-icon.remove {
+            background: #fef2f2;
+            color: var(--error);
+        }
+        .btn-icon.remove:hover { background: #fee2e2; }
+
+        /* ========== TARJETAS DE FAMILIARES (mejor en móvil) ========== */
+        .familiares-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .familiar-card {
+            background: #f9fafb;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+        }
+
+        .familiar-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .familiar-card .card-num {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .familiar-card .btn-remove-card {
+            background: #fef2f2;
+            color: var(--error);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .familiar-card .btn-remove-card:hover { background: #fee2e2; }
+
+        .familiar-card .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 500px) {
+            .familiar-card .card-grid { grid-template-columns: 1fr; }
+        }
+
+        .familiar-card .card-grid .full { grid-column: 1 / -1; }
+
+        .familiar-card label {
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .familiar-card input,
+        .familiar-card select {
+            padding: 10px 12px;
+            font-size: 0.9rem;
+            border-radius: 8px;
+        }
+
+        .btn-add {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1.5px dashed var(--primary);
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            width: auto;
+            margin: 0;
+        }
+        .btn-add:hover {
+            background: var(--primary);
+            color: white;
+            border-style: solid;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: var(--text);
+            width: auto;
+            margin: 0;
+            padding: 13px 22px;
+        }
+        .btn-secondary:hover { background: #d1d5db; }
+
+        .btn-primary-action {
+            width: auto;
+            margin: 0;
+            padding: 13px 28px;
+        }
+
+        .success-banner {
+            display: none;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: var(--primary-dark);
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .success-banner.show { display: block; }
+
+        .empty-msg {
+            text-align: center;
+            color: var(--text-light);
+            padding: 20px;
+            font-style: italic;
+            font-size: 0.9rem;
+            background: #f9fafb;
+            border-radius: 10px;
+            border: 1px dashed var(--border);
+        }
+
+        /* Admin dashboard */
+        .admin-dashboard {
+            text-align: center;
+            padding: 60px 24px;
+        }
+        .admin-dashboard h2 { color: var(--primary); margin-bottom: 8px; }
+        .admin-dashboard p { color: var(--text-light); margin-bottom: 24px; }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== PANTALLA DE LOGIN ==================== -->
+    <div id="login-screen" class="login-wrapper">
+        <div class="container">
+            <div class="card">
+                <div class="header">
+                    <div class="header-brands">
+                        <img class="header-brand-logo" src="logo-recibar1.png" alt="Logo Recibar 1" width="56" height="56">
+                        <div class="header-brand-text">
+                            <h1>RECIBAR C.A.</h1>
+                            <p>Corporación de Reciclaje</p>
+                        </div>
+                        <img class="header-brand-logo" src="logo-recibar2.png" alt="Logo Recibar 2" width="56" height="56">
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" data-tab="trabajador">Trabajador</button>
+                    <button class="tab" data-tab="admin">Administrador</button>
+                </div>
+
+                <div class="form-container">
+                    <div id="error-msg" class="error-msg"></div>
+                    <div id="success-msg" class="success-msg"></div>
+
+                    <form id="form-trabajador" class="form active">
+                        <div class="form-group">
+                            <label for="cedula">Número de Cédula</label>
+                            <input type="text" id="cedula" name="cedula" placeholder="Ej: 12345678" required autocomplete="off" inputmode="numeric">
+                            <p class="hint">Ingrese solo números, sin puntos ni guiones</p>
+                        </div>
+                        <button type="submit" class="btn">Ingresar como Trabajador</button>
+                    </form>
+
+                    <form id="form-admin" class="form">
+                        <div class="form-group">
+                            <label for="email">Correo electrónico</label>
+                            <input type="email" id="email" name="email" placeholder="correo@ejemplo.com" required autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+                            <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" class="btn">Ingresar como Administrador</button>
+                    </form>
+                </div>
+
+                <div class="footer">
+                    Sistema de Registro de Personal · RECIBAR C.A.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== FICHA DEL EMPLEADO (a) ==================== -->
+    <div id="ficha-screen" class="ficha-wrapper">
+        <div class="ficha-header">
+            <div class="ficha-header-left">
+                <div class="logo">♻️</div>
+                <div>
+                    <h1>Ficha del Empleado (a)</h1>
+                    <p>RECIBAR C.A. · Cédula: <span id="cedula-mostrada"></span></p>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+
+        <div class="ficha-card">
+            <div id="success-banner" class="success-banner">
+                ✅ Ficha guardada correctamente. (Simulación local — luego se conectará a Supabase)
+            </div>
+
+            <form id="ficha-form">
+                <!-- 1. DATOS PERSONALES -->
+                <div class="section">
+                    <h2 class="section-title"><span>1</span> Datos Personales</h2>
+                    <div class="grid-2">
+                        <div class="form-group full">
+                            <label for="nombres">Nombres y Apellidos *</label>
+                            <input type="text" id="nombres" name="nombres" required placeholder="Ej: María José Pérez González">
+                        </div>
+                        <div class="form-group">
+                            <label for="cedula-ficha">Cédula de Identidad *</label>
+                            <input type="text" id="cedula-ficha" name="cedula_ficha" required readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="estado_civil">Estado Civil *</label>
+                            <select id="estado_civil" name="estado_civil" required>
+                                <option value="">Seleccione...</option>
+                                <option value="soltero">Soltero/a</option>
+                                <option value="casado">Casado/a</option>
+                                <option value="concubino">Concubino/a</option>
+                                <option value="viudo">Viudo/a</option>
+                            </select>
+                        </div>
+
+                        <!-- TELÉFONOS MÚLTIPLES -->
+                        <div class="form-group full">
+                            <label>Números de Teléfonos *</label>
+                            <div class="telefonos-lista" id="telefonos-lista">
+                                <div class="telefono-item">
+                                    <input type="tel" name="telefono_1" placeholder="Ej: 0412-1234567" required>
+                                    <button type="button" class="btn-icon add" onclick="agregarTelefono()" title="Agregar otro teléfono">+</button>
+                                </div>
+                            </div>
+                            <p class="hint">Puede agregar varios números de teléfono</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sexo">Sexo *</label>
+                            <select id="sexo" name="sexo" required>
+                                <option value="">Seleccione...</option>
+                                <option value="femenino">Femenino</option>
+                                <option value="masculino">Masculino</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="lugar_nacimiento">Lugar de Nacimiento *</label>
+                            <input type="text" id="lugar_nacimiento" name="lugar_nacimiento" required placeholder="Ciudad, Estado">
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_nacimiento">Fecha de Nacimiento *</label>
+                            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edad">Edad</label>
+                            <input type="number" id="edad" name="edad" readonly placeholder="Se calcula automáticamente">
+                        </div>
+                        <div class="form-group">
+                            <label for="nivel_estudio">Nivel de Estudio *</label>
+                            <select id="nivel_estudio" name="nivel_estudio" required>
+                                <option value="">Seleccione...</option>
+                                <option value="analfabetismo">Analfabetismo</option>
+                                <option value="primaria">Primaria</option>
+                                <option value="secundaria">Secundaria</option>
+                                <option value="bachiller">Bachiller</option>
+                                <option value="tsu">TSU (Técnico Superior Universitario)</option>
+                                <option value="universitario">Universitario</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="correo">Correo Electrónico</label>
+                            <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com">
+                        </div>
+                        <!-- DIRECCIÓN: Municipio / Parroquia / Comuna -->
+                        <div class="form-group">
+                            <label for="municipio">Municipio *</label>
+                            <select id="municipio" name="municipio" required>
+                                <option value="">Seleccione...</option>
+                                <option value="simon_bolivar">Simón Bolívar</option>
+                                <option value="otro">Otro municipio</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="otro-municipio-group" style="display:none;">
+                            <label for="municipio_otro">Especifique el Municipio *</label>
+                            <input type="text" id="municipio_otro" name="municipio_otro" placeholder="Nombre del municipio">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="parroquia">Parroquia *</label>
+                            <select id="parroquia" name="parroquia" required>
+                                <option value="">Seleccione municipio primero...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="parroquia-otro-group" style="display:none;">
+                            <label for="parroquia_otro">Especifique la Parroquia *</label>
+                            <input type="text" id="parroquia_otro" name="parroquia_otro" placeholder="Nombre de la parroquia">
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="comuna">Comuna *</label>
+                            <select id="comuna" name="comuna" required>
+                                <option value="">Seleccione municipio primero...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full" id="comuna-otro-group" style="display:none;">
+                            <label for="comuna_otro">Especifique la Comuna *</label>
+                            <input type="text" id="comuna_otro" name="comuna_otro" placeholder="Nombre de la comuna">
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="direccion">Dirección detallada *</label>
+                            <textarea id="direccion" name="direccion" required placeholder="Calle, sector, punto de referencia..."></textarea>
+                        </div>
+
+                        </div>
+                </div>
+
+                <!-- 2. CONDICIÓN DE SALUD Y DISCAPACIDAD (unificado) -->
+                <div class="section">
+                    <h2 class="section-title"><span>2</span> Condición de Salud y Discapacidad</h2>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="tiene_condicion">¿Tiene alguna condición de salud o discapacidad? *</label>
+                            <select id="tiene_condicion" name="tiene_condicion" required>
+                                <option value="">Seleccione...</option>
+                                <option value="no">No</option>
+                                <option value="si">Sí</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="condicion-detalles" class="conditional">
+                        <div class="grid-2">
+                            <div class="form-group full">
+                                <label for="condicion_cual">Especifique la condición o discapacidad *</label>
+                                <input type="text" id="condicion_cual" name="condicion_cual" placeholder="Ej: Hipertensión, Diabetes, Discapacidad visual, Asma...">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tipo_condicion">Tipo *</label>
+                                <select id="tipo_condicion" name="tipo_condicion">
+                                    <option value="">Seleccione...</option>
+                                    <option value="salud">Condición de salud</option>
+                                    <option value="discapacidad">Discapacidad</option>
+                                    <option value="ambas">Ambas</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="es_tratada">¿Es tratada? *</label>
+                                <select id="es_tratada" name="es_tratada">
+                                    <option value="">Seleccione...</option>
+                                    <option value="si">Sí, está siendo tratada</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="depende_tratamiento">¿Requiere o depende de tratamiento? *</label>
+                                <select id="depende_tratamiento" name="depende_tratamiento">
+                                    <option value="">Seleccione...</option>
+                                    <option value="no">No</option>
+                                    <option value="si">Sí</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full" id="tratamiento-cual-group" style="display:none;">
+                                <label for="tratamiento_cual">¿Qué tratamiento recibe o requiere? *</label>
+                                <input type="text" id="tratamiento_cual" name="tratamiento_cual" placeholder="Ej: Insulina, fisioterapia, medicamentos para la presión, terapia...">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="es_por_vida">¿Es de por vida? *</label>
+                                <select id="es_por_vida" name="es_por_vida">
+                                    <option value="">Seleccione...</option>
+                                    <option value="si">Sí, es de por vida</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="tiempo-tratamiento-group" style="display:none;">
+                                <label for="tiempo_tratamiento">¿Por cuánto tiempo?</label>
+                                <input type="text" id="tiempo_tratamiento" name="tiempo_tratamiento" placeholder="Ej: 6 meses, 2 años, temporal...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. DATOS DE PROGENITORES (tarjetas) -->
+                <div class="section">
+                    <h2 class="section-title"><span>3</span> Datos de Progenitores</h2>
+                    <p class="hint" style="margin-bottom:14px;">Puede agregar padre, madre u otros progenitores.</p>
+                    <div class="familiares-lista" id="progenitores-lista">
+                        <div class="empty-msg" id="progenitores-empty">No se han agregado registros</div>
+                    </div>
+                    <button type="button" class="btn-add" onclick="agregarFamiliar('progenitores')">+ Agregar progenitor</button>
+                </div>
+
+                <!-- 4. DATOS DE LA PAREJA (tarjetas) -->
+                <div class="section">
+                    <h2 class="section-title"><span>4</span> Datos de la Pareja</h2>
+                    <p class="hint" style="margin-bottom:14px;">Complete solo si aplica.</p>
+                    <div class="familiares-lista" id="pareja-lista">
+                        <div class="empty-msg" id="pareja-empty">No se han agregado registros</div>
+                    </div>
+                    <button type="button" class="btn-add" onclick="agregarFamiliar('pareja')">+ Agregar pareja</button>
+                </div>
+
+                <!-- 5. DATOS DE HIJOS (tarjetas) -->
+                <div class="section">
+                    <h2 class="section-title"><span>5</span> Datos de Hijos</h2>
+                    <p class="hint" style="margin-bottom:14px;">Puede agregar todos los hijos que desee.</p>
+                    <div class="familiares-lista" id="hijos-lista">
+                        <div class="empty-msg" id="hijos-empty">No se han agregado registros</div>
+                    </div>
+                    <button type="button" class="btn-add" onclick="agregarFamiliar('hijos')">+ Agregar hijo/a</button>
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">Limpiar formulario</button>
+                    <button type="submit" class="btn btn-primary-action">Guardar Ficha</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== DASHBOARD ADMIN ==================== -->
+    <div id="admin-screen" class="login-wrapper" style="display:none;">
+        <div class="container">
+            <div class="card">
+                <div class="admin-dashboard">
+                    <div class="logo" style="background: var(--primary-light); color: var(--primary); margin-bottom: 20px;">👤</div>
+                    <h2>Panel de Administrador</h2>
+                    <p>Correo: <strong id="admin-email-mostrado"></strong></p>
+                    <p style="margin-bottom: 24px;">Aquí podrás gestionar las fichas de los trabajadores (próximamente).</p>
+                    <button class="btn" style="background:#6b7280; max-width:200px; margin:0 auto;" onclick="cerrarSesion()">Cerrar sesión</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_EMAIL = 'recibartalentohumano@gmail.com';
+        const ADMIN_PASSWORD = 'Recibar.2026';
+
+        const loginScreen = document.getElementById('login-screen');
+        const fichaScreen = document.getElementById('ficha-screen');
+        const adminScreen = document.getElementById('admin-screen');
+        const errorMsg = document.getElementById('error-msg');
+        const successMsg = document.getElementById('success-msg');
+
+        // Tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.tab;
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+                document.getElementById(`form-${target}`).classList.add('active');
+                hideMessages();
+            });
+        });
+
+        // Login Trabajador
+        document.getElementById('form-trabajador').addEventListener('submit', function(e) {
+            e.preventDefault();
+            hideMessages();
+            const cedula = document.getElementById('cedula').value.trim();
+
+            if (!/^\d{6,10}$/.test(cedula)) {
+                showError('Por favor ingrese un número de cédula válido (solo números, 6 a 10 dígitos).');
+                return;
+            }
+
+            sessionStorage.setItem('rol', 'trabajador');
+            sessionStorage.setItem('cedula', cedula);
+
+            showSuccess('Acceso concedido. Cargando ficha...');
+            setTimeout(() => mostrarFicha(cedula), 600);
+        });
+
+        // Login Administrador
+        document.getElementById('form-admin').addEventListener('submit', function(e) {
+            e.preventDefault();
+            hideMessages();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+
+            if (email === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD) {
+                sessionStorage.setItem('rol', 'administrador');
+                sessionStorage.setItem('email', email);
+                showSuccess('Acceso de administrador concedido...');
+                setTimeout(() => mostrarAdmin(email), 600);
+            } else {
+                showError('Correo o contraseña incorrectos. Verifique e intente nuevamente.');
+            }
+        });
+
+        function mostrarFicha(cedula) {
+            loginScreen.style.display = 'none';
+            adminScreen.style.display = 'none';
+            fichaScreen.classList.add('show');
+            document.getElementById('cedula-mostrada').textContent = cedula;
+            document.getElementById('cedula-ficha').value = cedula;
+        }
+
+        function mostrarAdmin(email) {
+            loginScreen.style.display = 'none';
+            fichaScreen.classList.remove('show');
+            adminScreen.style.display = 'flex';
+            document.getElementById('admin-email-mostrado').textContent = email;
+        }
+
+        function cerrarSesion() {
+            sessionStorage.clear();
+            fichaScreen.classList.remove('show');
+            adminScreen.style.display = 'none';
+            loginScreen.style.display = 'flex';
+            document.getElementById('form-trabajador').reset();
+            document.getElementById('form-admin').reset();
+            document.getElementById('ficha-form').reset();
+            hideMessages();
+            // Reset teléfonos
+            document.getElementById('telefonos-lista').innerHTML = `
+                <div class="telefono-item">
+                    <input type="tel" name="telefono_1" placeholder="Ej: 0412-1234567" required>
+                    <button type="button" class="btn-icon add" onclick="agregarTelefono()" title="Agregar otro teléfono">+</button>
+                </div>
+            `;
+            contadorTelefonos = 1;
+            // Reset familiares
+            ['progenitores', 'pareja', 'hijos'].forEach(tipo => {
+                document.getElementById(`${tipo}-lista`).innerHTML = `<div class="empty-msg" id="${tipo}-empty">No se han agregado registros</div>`;
+                contadores[tipo] = 0;
+            });
+            // Reset condición de salud/discapacidad
+            document.getElementById('condicion-detalles').classList.remove('show');
+            document.getElementById('tratamiento-cual-group').style.display = 'none';
+            document.getElementById('tiempo-tratamiento-group').style.display = 'none';
+            // Reset dirección
+            document.getElementById('otro-municipio-group').style.display = 'none';
+            document.getElementById('parroquia-otro-group').style.display = 'none';
+            document.getElementById('comuna-otro-group').style.display = 'none';
+            document.getElementById('parroquia').innerHTML = '<option value="">Seleccione municipio primero...</option>';
+            document.getElementById('comuna').innerHTML = '<option value="">Seleccione municipio primero...</option>';
+        }
+
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.classList.add('show');
+            successMsg.classList.remove('show');
+        }
+        function showSuccess(msg) {
+            successMsg.textContent = msg;
+            successMsg.classList.add('show');
+            errorMsg.classList.remove('show');
+        }
+        function hideMessages() {
+            errorMsg.classList.remove('show');
+            successMsg.classList.remove('show');
+        }
+
+        // ========== TELÉFONOS MÚLTIPLES ==========
+        let contadorTelefonos = 1;
+
+        function agregarTelefono() {
+            contadorTelefonos++;
+            const lista = document.getElementById('telefonos-lista');
+            const div = document.createElement('div');
+            div.className = 'telefono-item';
+            div.innerHTML = `
+                <input type="tel" name="telefono_${contadorTelefonos}" placeholder="Ej: 0414-9876543">
+                <button type="button" class="btn-icon remove" onclick="this.parentElement.remove()" title="Quitar">×</button>
+            `;
+            lista.appendChild(div);
+        }
+
+        // ========== LÓGICA DE LA FICHA ==========
+        document.getElementById('fecha_nacimiento').addEventListener('change', function() {
+            const fecha = new Date(this.value);
+            if (!this.value) {
+                document.getElementById('edad').value = '';
+                return;
+            }
+            const hoy = new Date();
+            let edad = hoy.getFullYear() - fecha.getFullYear();
+            const m = hoy.getMonth() - fecha.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < fecha.getDate())) edad--;
+            document.getElementById('edad').value = edad >= 0 ? edad : '';
+        });
+
+        // ========== CONDICIÓN DE SALUD Y DISCAPACIDAD (unificado) ==========
+        document.getElementById('tiene_condicion').addEventListener('change', function() {
+            const detalles = document.getElementById('condicion-detalles');
+            if (this.value === 'si') {
+                detalles.classList.add('show');
+            } else {
+                detalles.classList.remove('show');
+                document.getElementById('condicion_cual').value = '';
+                document.getElementById('tipo_condicion').value = '';
+                document.getElementById('es_tratada').value = '';
+                document.getElementById('depende_tratamiento').value = '';
+                document.getElementById('tratamiento_cual').value = '';
+                document.getElementById('es_por_vida').value = '';
+                document.getElementById('tiempo_tratamiento').value = '';
+                document.getElementById('tratamiento-cual-group').style.display = 'none';
+                document.getElementById('tiempo-tratamiento-group').style.display = 'none';
+            }
+        });
+
+        document.getElementById('depende_tratamiento').addEventListener('change', function() {
+            document.getElementById('tratamiento-cual-group').style.display = this.value === 'si' ? 'block' : 'none';
+            if (this.value !== 'si') document.getElementById('tratamiento_cual').value = '';
+        });
+
+        // ========== MUNICIPIO / PARROQUIA / COMUNA ==========
+        const parroquiasSimonBolivar = [
+            'Bergantín',
+            'Caigua',
+            'El Carmen',
+            'El Pilar',
+            'Naricual',
+            'San Cristóbal'
+        ];
+
+        const comunasSimonBolivar = [
+            '4F-92 COMANDANTE ETERNO HUGO RAFAEL CHAVEZ',
+            'AGROECOLOGICA Y TURISTICA BERGANTIN',
+            'AGROINDUSTRIAL CACIQUE GUAICAIPURO',
+            'AGROTURISTICA Y SOCIALISTA LA FE DE TODOS',
+            'ANTONIO RICAURTE 4F',
+            'DESPERTAR CUMANAGOTO',
+            'DONATO CONSTANTINO MARADEI',
+            'ECO AMBIENTAL EL GRAN EL SAMAN DORADO',
+            'EZEQUIEL ZAMORA',
+            'FRANCISCO DE MIRANDA DE CRUZ VERDE',
+            'GOLPE DE TIMON',
+            'GRUTA SAN FELIPE NERI',
+            'GUERREROS DE BOYACA',
+            'HUGO CHAVEZ FRIAS 2013',
+            'INDIGENA CUMANAGOTO SAN BERNARDINO',
+            'INDIGENA GRAN CACIQUE CAYAURIMA',
+            'INDIOS CUMANAGOTOS',
+            'JOSE ANTONIO ANZOATEGUI 14-15',
+            'JUANA PETRONILA HERNANDEZ',
+            'LAS ORQUIDEAS DE CHAVEZ',
+            'LINA RON',
+            'LOS ESFUERZOS EN VICTORIA',
+            'LOS HIJOS REBELDES DE CHAVEZ',
+            'LOS MESONES UNIDOS CON CHAVEZ',
+            'LUISA CACERES DE ARISMENDI',
+            'MI GRAN BARCELONA',
+            'PARQUE VIDOÑO',
+            'POR EL LEGADO DEL COMANDANTE CHAVEZ',
+            'POTOTUCUAL',
+            'PRODUCTIVA LA LUCHA DE UN PUEBLO UNIDO',
+            'PRODUCTIVA VENCEDORES DE LA PATRIA',
+            'SIMON BOLIVAR NARICUAL',
+            'SOCIALISTA BAHIA DE BARCELONA SIMON BOLIVAR',
+            'SOCIALISTA EL VIÑEDO',
+            'SOCIALISTA INDIGENA EL PILAR DE LOS CUMANAGOTOS',
+            'SOCIALISTA LA VICTORIA PERFECTA 29 DE MARZO',
+            'SOCIALISTA MAYORQUIN III',
+            'SOCIALISTA TRIUNFADORES INDIGENAS CUMANAGOTOS',
+            'SOCIALISTA VALLES DEL NEVERI',
+            'SOCIO PRODUCTIVA SIMON BOLIVAR',
+            'SOCIOPRODUCTIVA BICENTENARIO DE LA INDEPENDENCIA',
+            'VENCEDORES INDIGENAS CUMANAGOTO'
+        ];
+
+        function llenarSelect(selectId, opciones, placeholder) {
+            const sel = document.getElementById(selectId);
+            sel.innerHTML = `<option value="">${placeholder}</option>`;
+            opciones.forEach(op => {
+                const opt = document.createElement('option');
+                opt.value = op;
+                opt.textContent = op;
+                sel.appendChild(opt);
+            });
+        }
+
+        document.getElementById('municipio').addEventListener('change', function() {
+            const valor = this.value;
+            const otroMun = document.getElementById('otro-municipio-group');
+            const parroquiaOtro = document.getElementById('parroquia-otro-group');
+            const comunaOtro = document.getElementById('comuna-otro-group');
+            const selParroquia = document.getElementById('parroquia');
+            const selComuna = document.getElementById('comuna');
+
+            if (valor === 'simon_bolivar') {
+                otroMun.style.display = 'none';
+                parroquiaOtro.style.display = 'none';
+                comunaOtro.style.display = 'none';
+                document.getElementById('municipio_otro').value = '';
+                document.getElementById('parroquia_otro').value = '';
+                document.getElementById('comuna_otro').value = '';
+
+                selParroquia.style.display = 'block';
+                selComuna.style.display = 'block';
+                selParroquia.required = true;
+                selComuna.required = true;
+                document.getElementById('parroquia_otro').required = false;
+                document.getElementById('comuna_otro').required = false;
+
+                llenarSelect('parroquia', parroquiasSimonBolivar, 'Seleccione parroquia...');
+                llenarSelect('comuna', comunasSimonBolivar, 'Seleccione comuna...');
+            } else if (valor === 'otro') {
+                otroMun.style.display = 'block';
+                parroquiaOtro.style.display = 'block';
+                comunaOtro.style.display = 'block';
+
+                selParroquia.innerHTML = '<option value="">—</option>';
+                selComuna.innerHTML = '<option value="">—</option>';
+                selParroquia.required = false;
+                selComuna.required = false;
+                document.getElementById('municipio_otro').required = true;
+                document.getElementById('parroquia_otro').required = true;
+                document.getElementById('comuna_otro').required = true;
+            } else {
+                otroMun.style.display = 'none';
+                parroquiaOtro.style.display = 'none';
+                comunaOtro.style.display = 'none';
+                selParroquia.innerHTML = '<option value="">Seleccione municipio primero...</option>';
+                selComuna.innerHTML = '<option value="">Seleccione municipio primero...</option>';
+            }
+        });
+
+        document.getElementById('es_por_vida').addEventListener('change', function() {
+            document.getElementById('tiempo-tratamiento-group').style.display = this.value === 'no' ? 'block' : 'none';
+            if (this.value !== 'no') document.getElementById('tiempo_tratamiento').value = '';
+        });
+
+        // ========== FAMILIARES EN TARJETAS (cómodo en móvil) ==========
+        const contadores = { progenitores: 0, pareja: 0, hijos: 0 };
+
+        function agregarFamiliar(tipo) {
+            contadores[tipo]++;
+            const lista = document.getElementById(`${tipo}-lista`);
+            const empty = document.getElementById(`${tipo}-empty`);
+            if (empty) empty.remove();
+
+            const esHijos = tipo === 'hijos';
+            const card = document.createElement('div');
+            card.className = 'familiar-card';
+            card.dataset.id = contadores[tipo];
+
+            let extraCampo = '';
+            if (esHijos) {
+                extraCampo = `
+                    <div class="form-group">
+                        <label>Año que estudia</label>
+                        <input type="text" name="${tipo}_ano_${contadores[tipo]}" placeholder="Ej: 3er año">
+                    </div>
+                `;
+            }
+
+            const id = contadores[tipo];
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="card-num">#${id}</span>
+                    <button type="button" class="btn-remove-card" onclick="eliminarFamiliar(this, '${tipo}')" title="Eliminar">×</button>
+                </div>
+                <div class="card-grid">
+                    <div class="form-group full">
+                        <label>Nombre y Apellido</label>
+                        <input type="text" name="${tipo}_nombre_${id}" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Cédula</label>
+                        <input type="text" name="${tipo}_cedula_${id}" placeholder="Cédula" inputmode="numeric">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" name="${tipo}_telefono_${id}" placeholder="0412-0000000">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Nacimiento</label>
+                        <input type="date" name="${tipo}_fecha_${id}" onchange="calcularEdadCard(this)">
+                    </div>
+                    <div class="form-group">
+                        <label>Edad</label>
+                        <input type="number" name="${tipo}_edad_${id}" readonly placeholder="—">
+                    </div>
+                    ${extraCampo}
+                    <div class="form-group">
+                        <label>¿Tiene discapacidad?</label>
+                        <select name="${tipo}_discapacidad_${id}" onchange="toggleDiscFamiliar(this, '${tipo}', ${id})">
+                            <option value="no">No</option>
+                            <option value="si">Sí</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-grid disc-extra" id="${tipo}_disc_extra_${id}" style="display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--border);">
+                    <div class="form-group full">
+                        <label>¿Cuál discapacidad?</label>
+                        <input type="text" name="${tipo}_disc_cual_${id}" placeholder="Especifique la discapacidad">
+                    </div>
+                    <div class="form-group">
+                        <label>¿Es tratada?</label>
+                        <select name="${tipo}_disc_tratada_${id}">
+                            <option value="">Seleccione...</option>
+                            <option value="si">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Requiere tratamiento?</label>
+                        <select name="${tipo}_disc_requiere_${id}" onchange="toggleTratFamiliar(this, '${tipo}', ${id})">
+                            <option value="">Seleccione...</option>
+                            <option value="si">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group full" id="${tipo}_disc_trat_cual_${id}" style="display:none;">
+                        <label>¿Qué tratamiento?</label>
+                        <input type="text" name="${tipo}_disc_tratamiento_${id}" placeholder="Especifique el tratamiento">
+                    </div>
+                </div>
+            `;
+            lista.appendChild(card);
+        }
+
+        function toggleDiscFamiliar(select, tipo, id) {
+            const extra = document.getElementById(`${tipo}_disc_extra_${id}`);
+            if (select.value === 'si') {
+                extra.style.display = 'grid';
+            } else {
+                extra.style.display = 'none';
+                extra.querySelectorAll('input, select').forEach(el => el.value = '');
+                document.getElementById(`${tipo}_disc_trat_cual_${id}`).style.display = 'none';
+            }
+        }
+
+        function toggleTratFamiliar(select, tipo, id) {
+            const grupo = document.getElementById(`${tipo}_disc_trat_cual_${id}`);
+            grupo.style.display = select.value === 'si' ? 'block' : 'none';
+            if (select.value !== 'si') {
+                const input = grupo.querySelector('input');
+                if (input) input.value = '';
+            }
+        }
+
+        function eliminarFamiliar(btn, tipo) {
+            btn.closest('.familiar-card').remove();
+            const lista = document.getElementById(`${tipo}-lista`);
+            if (lista.children.length === 0) {
+                lista.innerHTML = `<div class="empty-msg" id="${tipo}-empty">No se han agregado registros</div>`;
+            } else {
+                // Renumerar
+                lista.querySelectorAll('.familiar-card').forEach((card, i) => {
+                    card.querySelector('.card-num').textContent = `#${i + 1}`;
+                });
+            }
+        }
+
+        function calcularEdadCard(input) {
+            const card = input.closest('.familiar-card');
+            const edadInput = card.querySelector('input[name*="_edad_"]');
+            if (!input.value) { edadInput.value = ''; return; }
+            const fecha = new Date(input.value);
+            const hoy = new Date();
+            let edad = hoy.getFullYear() - fecha.getFullYear();
+            const m = hoy.getMonth() - fecha.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < fecha.getDate())) edad--;
+            edadInput.value = edad >= 0 ? edad : '';
+        }
+
+        // Guardar ficha
+        document.getElementById('ficha-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            console.log('Datos de la ficha:', data);
+
+            const banner = document.getElementById('success-banner');
+            banner.classList.add('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => banner.classList.remove('show'), 5000);
+        });
+
+        function limpiarFormulario() {
+            if (confirm('¿Está seguro de que desea limpiar todo el formulario?')) {
+                const cedulaActual = document.getElementById('cedula-ficha').value;
+                document.getElementById('ficha-form').reset();
+                document.getElementById('cedula-ficha').value = cedulaActual;
+                document.getElementById('edad').value = '';
+                // Reset condición de salud/discapacidad
+                document.getElementById('condicion-detalles').classList.remove('show');
+                document.getElementById('tratamiento-cual-group').style.display = 'none';
+                document.getElementById('tiempo-tratamiento-group').style.display = 'none';
+
+                // Reset teléfonos
+                document.getElementById('telefonos-lista').innerHTML = `
+                    <div class="telefono-item">
+                        <input type="tel" name="telefono_1" placeholder="Ej: 0412-1234567" required>
+                        <button type="button" class="btn-icon add" onclick="agregarTelefono()" title="Agregar otro teléfono">+</button>
+                    </div>
+                `;
+                contadorTelefonos = 1;
+
+                // Reset familiares
+                ['progenitores', 'pareja', 'hijos'].forEach(tipo => {
+                    document.getElementById(`${tipo}-lista`).innerHTML = `<div class="empty-msg" id="${tipo}-empty">No se han agregado registros</div>`;
+                    contadores[tipo] = 0;
+                });
+
+                // Reset dirección
+                document.getElementById('otro-municipio-group').style.display = 'none';
+                document.getElementById('parroquia-otro-group').style.display = 'none';
+                document.getElementById('comuna-otro-group').style.display = 'none';
+                document.getElementById('parroquia').innerHTML = '<option value="">Seleccione municipio primero...</option>';
+                document.getElementById('comuna').innerHTML = '<option value="">Seleccione municipio primero...</option>';
+            }
+        }
+
+        // Restaurar sesión
+        window.addEventListener('DOMContentLoaded', () => {
+            const rol = sessionStorage.getItem('rol');
+            if (rol === 'trabajador') {
+                mostrarFicha(sessionStorage.getItem('cedula'));
+            } else if (rol === 'administrador') {
+                mostrarAdmin(sessionStorage.getItem('email'));
+            }
+        });
+    </script>
+</body>
+</html>
