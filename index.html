@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             /* Paleta premium esmeralda + dorado */
@@ -102,7 +104,7 @@
         .header {
             background: var(--green-gradient);
             color: white;
-            padding: 32px 26px 30px;
+            padding: 34px 18px 32px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -151,11 +153,12 @@
 
         .header-brand-logo {
             display: block;
-            width: 64px;
-            height: 64px;
-            padding: 6px;
+            width: 76px;
+            height: 76px;
+            padding: 8px;
             object-fit: contain;
-            border-radius: 16px;
+            justify-self: center;
+            border-radius: 20px;
             background: #ffffff;
             box-shadow: 0 6px 18px rgba(0,0,0,0.18);
             transition: transform 0.3s ease;
@@ -178,7 +181,7 @@
             white-space: nowrap;
         }
         .header h1 {
-            font-size: clamp(0.8rem, 3vw, 1.15rem);
+            font-size: clamp(0.78rem, 2.7vw, 1.08rem);
             font-weight: 700;
             letter-spacing: 0;
             margin: 0;
@@ -193,20 +196,20 @@
         }
 
         @media (max-width: 480px) {
-            .header { padding: 16px 10px 14px; }
-            .header-brand-logo { width: 36px; height: 36px; padding: 3px; border-radius: 10px; }
+            .header { padding: 16px 8px 14px; }
+            .header-brand-logo { width: 46px; height: 46px; padding: 4px; border-radius: 12px; }
             .header h1 {
-                font-size: 0.72rem;
+                font-size: 0.7rem;
                 letter-spacing: 0;
                 white-space: nowrap;
             }
-            .header p { font-size: 0.54rem; margin-top: 2px; letter-spacing: 0.03em; }
+            .header p { font-size: 0.52rem; margin-top: 2px; letter-spacing: 0.03em; }
         }
         @media (max-width: 360px) {
-            .header { padding: 14px 8px 12px; }
-            .header-brand-logo { width: 30px; height: 30px; padding: 2px; border-radius: 8px; }
-            .header h1 { font-size: 0.66rem; letter-spacing: 0; white-space: nowrap; }
-            .header p { font-size: 0.5rem; margin-top: 2px; letter-spacing: 0.02em; }
+            .header { padding: 14px 6px 12px; }
+            .header-brand-logo { width: 40px; height: 40px; padding: 3px; border-radius: 10px; }
+            .header h1 { font-size: 0.62rem; letter-spacing: 0; white-space: nowrap; }
+            .header p { font-size: 0.48rem; margin-top: 2px; letter-spacing: 0.02em; }
         }
 
         .tabs {
@@ -410,7 +413,7 @@
         .ficha-header {
             background: var(--green-gradient);
             color: white;
-            padding: 28px 30px;
+            padding: 30px 20px;
             border-radius: 20px 20px 0 0;
             display: flex;
             align-items: center;
@@ -418,7 +421,7 @@
             position: relative;
             overflow: hidden;
             box-shadow: inset 0 -1px 0 rgba(212,172,84,0.4);
-            min-height: 110px;
+            min-height: 124px;
         }
         .ficha-header::before {
             content: '';
@@ -431,11 +434,11 @@
         }
 
         .ficha-brand-logo {
-            width: 70px;
-            height: 70px;
-            padding: 7px;
+            width: 78px;
+            height: 78px;
+            padding: 8px;
             object-fit: contain;
-            border-radius: 18px;
+            border-radius: 20px;
             background: #ffffff;
             box-shadow: 0 6px 18px rgba(0,0,0,0.18);
             flex-shrink: 0;
@@ -453,7 +456,7 @@
         }
 
         .ficha-header h1 {
-            font-size: 1.15rem;
+            font-size: 1.08rem;
             font-weight: 700;
             letter-spacing: 0.01em;
             white-space: nowrap;
@@ -471,19 +474,20 @@
 
         /* En móviles */
         @media (max-width: 520px) {
-            .ficha-header { padding: 14px 10px; border-radius: 16px 16px 0 0; min-height: auto; }
-            .ficha-brand-logo { width: 36px; height: 36px; border-radius: 10px; padding: 3px; }
+            .ficha-header { padding: 16px 8px; border-radius: 16px 16px 0 0; min-height: auto; }
+            .ficha-brand-logo { width: 48px; height: 48px; border-radius: 12px; padding: 4px; }
             .ficha-header h1 {
-                font-size: 0.72rem;
+                font-size: 0.7rem;
                 letter-spacing: 0;
                 white-space: nowrap;
             }
-            .ficha-header p { font-size: 0.54rem; margin-top: 2px; letter-spacing: 0.03em; }
+            .ficha-header p { font-size: 0.52rem; margin-top: 2px; letter-spacing: 0.03em; }
         }
         @media (max-width: 380px) {
-            .ficha-brand-logo { width: 30px; height: 30px; border-radius: 8px; padding: 2px; }
-            .ficha-header h1 { font-size: 0.66rem; letter-spacing: 0; white-space: nowrap; }
-            .ficha-header p { font-size: 0.5rem; margin-top: 2px; }
+            .ficha-header { padding: 14px 6px; }
+            .ficha-brand-logo { width: 42px; height: 42px; border-radius: 10px; padding: 3px; }
+            .ficha-header h1 { font-size: 0.62rem; letter-spacing: 0; white-space: nowrap; }
+            .ficha-header p { font-size: 0.48rem; margin-top: 2px; }
         }
 
         .btn-logout-footer {
@@ -698,6 +702,9 @@
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
+        @media (min-width: 501px) {
+            /* En pantallas más grandes hacemos 3 cols para que quepa sexo */
+        }
         @media (max-width: 500px) {
             .familiar-card .card-grid { grid-template-columns: 1fr; }
         }
@@ -884,6 +891,159 @@
             font-size: 0.95rem;
         }
 
+
+        /* ========== ADMIN PANEL ========== */
+        .admin-tab {
+            padding: 11px 20px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            color: var(--text-soft);
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            letter-spacing: 0.01em;
+        }
+        .admin-tab:hover { border-color: var(--primary); color: var(--primary-dark); transform: translateY(-1px); }
+        .admin-tab.active {
+            background: var(--green-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(15,107,67,0.25);
+        }
+        .admin-panel { animation: pageIn 0.4s ease; }
+
+        .btn-admin {
+            padding: 10px 18px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #fff, #f1f5f2);
+            border: 1.5px solid var(--border);
+            color: var(--text-soft);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .btn-admin:hover { background:#e8efeb; transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+        .btn-admin-success {
+            background: var(--green-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow:0 4px 10px rgba(15,107,67,0.2);
+        }
+        .btn-admin-success:hover { background: linear-gradient(135deg,#128251,#0a4e30); }
+        .btn-admin-danger {
+            background: linear-gradient(180deg,#fff,#fdf2f2);
+            color: var(--error);
+            border-color: #fecaca;
+        }
+        .btn-admin-danger:hover { background:#fee2e2; }
+        .btn-admin-view {
+            background: var(--gold-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow:0 3px 10px rgba(184,144,47,0.25);
+        }
+        .btn-admin-view:hover { filter:brightness(1.08); }
+
+        table th, table td {
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        table tbody tr { transition: background 0.15s; }
+        table tbody tr:hover { background: var(--primary-light); }
+        table tbody tr:nth-child(even) { background: #fafcfa; }
+        table tbody tr:nth-child(even):hover { background: var(--primary-light); }
+        table td { padding: 10px; font-size: 0.8rem; }
+        table td .btn-admin { padding:6px 12px; font-size:0.75rem; margin:2px 3px; }
+
+        .nomina-card {
+            background: linear-gradient(180deg,#fff,#f9fcf9);
+            border:1px solid var(--border);
+            border-radius:14px;
+            padding:18px;
+            cursor:pointer;
+            transition: all 0.2s ease;
+            display:flex;
+            align-items:center;
+            gap:14px;
+            box-shadow:var(--shadow-sm);
+        }
+        .nomina-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); border-color:var(--primary); }
+        .nomina-avatar {
+            width:54px; height:54px; border-radius:50%;
+            background: var(--green-gradient);
+            color:white; display:flex; align-items:center; justify-content:center;
+            font-weight:700; font-size:1.1rem;
+            flex-shrink:0;
+            box-shadow:0 4px 10px rgba(15,107,67,0.2);
+        }
+        .nomina-info h4 { font-size:0.95rem; font-weight:700; color:var(--text); margin-bottom:4px; }
+        .nomina-info p { font-size:0.78rem; color:var(--text-light); }
+        .nomina-info p span { color:var(--primary-dark); font-weight:600; }
+
+        .card-graf {
+            background:var(--white);
+            border-radius:16px;
+            padding:20px;
+            border:1px solid var(--border);
+            box-shadow:var(--shadow-md);
+        }
+        .card-graf h4 {
+            font-size:0.9rem;
+            color:var(--primary-darker);
+            font-weight:700;
+            margin-bottom:14px;
+            padding-bottom:10px;
+            border-bottom:1px solid var(--border);
+        }
+        .card-graf canvas { max-height: 280px; }
+
+        /* Planilla impresa */
+        .planilla-section { margin-bottom:18px; }
+        .planilla-section h3 {
+            font-size:0.92rem;
+            font-weight:700;
+            text-align:center;
+            background:#0a4e30;
+            color:white;
+            padding:6px 12px;
+            border-radius:6px 6px 0 0;
+            letter-spacing:0.04em;
+            text-transform:uppercase;
+        }
+        .planilla-grid { display:grid; grid-template-columns:1fr 1fr; border:1px solid #0a4e30; border-top:none; }
+        .planilla-item {
+            border-right:1px solid #0a4e30;
+            border-bottom:1px solid #0a4e30;
+            padding:8px 10px;
+            font-size:0.78rem;
+        }
+        .planilla-item:nth-child(2n) { border-right:none; }
+        .planilla-label { font-weight:700; text-transform:uppercase; font-size:0.68rem; color:#0a4e30; letter-spacing:0.04em; display:block; margin-bottom:3px; }
+        .planilla-value { font-weight:500; color:#1f2937; min-height:14px; }
+        .planilla-tabla { width:100%; border-collapse:collapse; border:1px solid #0a4e30; border-top:none; font-size:0.72rem; }
+        .planilla-tabla th {
+            background:#0f6b43; color:white; padding:6px 4px; text-align:center;
+            font-weight:600; font-size:0.68rem; border:1px solid #0a4e30;
+        }
+        .planilla-tabla td {
+            padding:6px 4px; border:1px solid #0a4e30; text-align:center;
+            font-size:0.7rem; min-height:20px;
+        }
+        .planilla-full { grid-column:1/-1; }
+        .planilla-item.full { grid-column:1/-1; }
+
+        @media print {
+            body * { visibility:hidden; }
+            #hoja-planilla, #hoja-planilla * { visibility:visible; }
+            #hoja-planilla { position:absolute; left:0; top:0; width:100%; box-shadow:none; }
+        }
+
         /* ========== INTRO VIDEO SCREEN ========== */
         .intro-wrapper {
             position: fixed;
@@ -1007,12 +1167,12 @@
             <div class="card">
                 <div class="header">
                     <div class="header-brands">
-                        <img class="header-brand-logo" src="logo-recibar1.png" alt="Logo Recibar 1" width="72" height="72">
+                        <img class="header-brand-logo" src="logo-recibar1.png" alt="Logo Recibar 1" width="76" height="76">
                         <div class="header-brand-text">
                             <h1>FICHA DE EMPLEADO (A)</h1>
                             <p>RECIBAR C.A</p>
                         </div>
-                        <img class="header-brand-logo" src="logo-recibar2.png" alt="Logo Recibar 2" width="72" height="72">
+                        <img class="header-brand-logo" src="logo-recibar2.png" alt="Logo Recibar 2" width="76" height="76">
                     </div>
                 </div>
 
@@ -1037,11 +1197,11 @@
                     <form id="form-admin" class="form">
                         <div class="form-group">
                             <label for="email">Correo electrónico</label>
-                            <input type="email" id="email" name="email" placeholder="correo@ejemplo.com" required autocomplete="username">
+                            <input type="email" id="email" name="email" placeholder="(opcional)">
                         </div>
                         <div class="form-group">
                             <label for="password">Contraseña</label>
-                            <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                            <input type="password" id="password" name="password" placeholder="(opcional)">
                         </div>
                         <button type="submit" class="btn">Ingresar como Administrador</button>
                     </form>
@@ -1069,18 +1229,18 @@
     <!-- ==================== FICHA DEL EMPLEADO (a) ==================== -->
     <div id="ficha-screen" class="ficha-wrapper">
         <div class="ficha-header">
-            <img class="ficha-brand-logo ficha-brand-logo--tl" src="logo-recibar1.png" alt="Logo Recibar 1" width="72" height="72">
+            <img class="ficha-brand-logo ficha-brand-logo--tl" src="logo-recibar1.png" alt="Logo Recibar 1" width="76" height="76">
             <div class="ficha-header-text">
                 <h1>FICHA DE EMPLEADO (A)</h1>
                 <p>RECIBAR C.A</p>
             </div>
-            <img class="ficha-brand-logo ficha-brand-logo--tr" src="logo-recibar2.png" alt="Logo Recibar 2" width="72" height="72">
+            <img class="ficha-brand-logo ficha-brand-logo--tr" src="logo-recibar2.png" alt="Logo Recibar 2" width="76" height="76">
             <span id="cedula-mostrada" style="display:none;"></span>
         </div>
 
         <div class="ficha-card">
             <div id="success-banner" class="success-banner">
-                ✅ Ficha guardada correctamente. (Simulación local — luego se conectará a Supabase)
+                ✅ Ficha guardada correctamente en Supabase.
             </div>
 
             <form id="ficha-form">
@@ -1313,23 +1473,162 @@
     </div>
 
     <!-- ==================== DASHBOARD ADMIN ==================== -->
-    <div id="admin-screen" class="login-wrapper" style="display:none;">
-        <div class="container">
-            <div class="card">
-                <div class="admin-dashboard">
-                    <div class="logo" style="background: var(--primary-light); color: var(--primary); margin-bottom: 20px;">👤</div>
-                    <h2>Panel de Administrador</h2>
-                    <p>Correo: <strong id="admin-email-mostrado"></strong></p>
-                    <p style="margin-bottom: 24px;">Aquí podrás gestionar las fichas de los trabajadores (próximamente).</p>
-                    <button class="btn" style="background:#6b7280; max-width:200px; margin:0 auto;" onclick="cerrarSesion()">Cerrar sesión</button>
+    <div id="admin-screen" style="display:none; min-height:100vh; background: var(--bg-page); padding:24px 20px 60px;">
+        <div style="max-width:1280px; margin:0 auto;">
+            <!-- Header admin -->
+            <div style="background:var(--green-gradient); border-radius:18px; padding:22px 26px; color:white; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; box-shadow:var(--shadow-xl); position:relative; overflow:hidden;">
+                <div style="display:flex; align-items:center; gap:14px; position:relative; z-index:1;">
+                    <div style="width:52px; height:52px; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.22); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px;">📊</div>
+                    <div>
+                        <h1 style="font-size:1.25rem; font-weight:700; letter-spacing:-0.01em;">Panel de Administrador</h1>
+                        <p style="font-size:0.72rem; opacity:0.85; margin-top:3px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase;">RECIBAR C.A · Gestión de Fichas</p>
+                    </div>
+                </div>
+                <button class="btn-logout-footer" onclick="cerrarSesion()" style="position:relative; z-index:1;">Cerrar sesión</button>
+            </div>
+
+            <!-- Tabs admin -->
+            <div style="display:flex; gap:8px; margin:22px 0 18px; flex-wrap:wrap;">
+                <button class="admin-tab active" data-admin-tab="tabla" onclick="switchAdminTab('tabla')">📋 Tabla de Datos</button>
+                <button class="admin-tab" data-admin-tab="vistaprevia" onclick="switchAdminTab('vistaprevia')">👥 Nómina / Ver Ficha</button>
+                <button class="admin-tab" data-admin-tab="graficas" onclick="switchAdminTab('graficas')">📈 Gráficas</button>
+            </div>
+
+            <!-- ===== TAB 1: TABLA DE DATOS ===== -->
+            <div id="admin-tabla" class="admin-panel">
+                <div style="background:var(--white); border-radius:16px; box-shadow:var(--shadow-lg); padding:22px; border:1px solid var(--border); overflow:hidden;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; gap:10px; flex-wrap:wrap;">
+                        <div>
+                            <h2 style="font-size:1.1rem; color:var(--primary-darker); font-weight:700;">Base de Datos de Trabajadores</h2>
+                            <p style="font-size:0.8rem; color:var(--text-light); margin-top:4px;">Datos ordenados por cédula (menor a mayor). <span id="contador-fichas" style="font-weight:600; color:var(--primary);"></span></p>
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <input type="text" id="buscador-fichas" placeholder="🔍 Buscar por cédula o nombre..." oninput="renderTablaFichas()" style="padding:10px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:0.88rem; min-width:220px; outline:none;">
+                            <button class="btn-admin" onclick="recargarFichas()">↻ Actualizar</button>
+                            <button class="btn-admin btn-admin-success" onclick="exportarExcel()">⬇️ Descargar Excel</button>
+                        </div>
+                    </div>
+                    <div style="overflow-x:auto; border-radius:12px; border:1px solid var(--border);">
+                        <table id="tabla-fichas" style="width:100%; border-collapse:collapse; font-size:0.82rem; min-width:900px;">
+                            <thead>
+                                <tr style="background:var(--green-gradient); color:white;">
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600; white-space:nowrap;">Cédula</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;">Nombres y Apellidos</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600; white-space:nowrap;">Estado Civil</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;">Sexo</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;">Teléfonos</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600; white-space:nowrap;">F. Nacimiento</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;">Edad</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600; white-space:nowrap;">Nivel Estudio</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;">Correo</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;">Municipio</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;">Condición/Disc.</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;"># Progen.</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;">Pareja</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;"># Hijos</th>
+                                    <th style="padding:12px 10px; text-align:center; font-weight:600;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-fichas-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== TAB 2: NÓMINA / VER FICHA ===== -->
+            <div id="admin-vistaprevia" class="admin-panel" style="display:none;">
+                <div id="nomina-view">
+                    <div style="background:var(--white); border-radius:16px; box-shadow:var(--shadow-lg); padding:22px; border:1px solid var(--border);">
+                        <h2 style="font-size:1.1rem; color:var(--primary-darker); font-weight:700; margin-bottom:6px;">Nómina de Trabajadores</h2>
+                        <p style="font-size:0.8rem; color:var(--text-light); margin-bottom:18px;">Selecciona un trabajador para ver su ficha completa.</p>
+                        <div id="lista-nomina" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px;"></div>
+                    </div>
+                </div>
+                <div id="ficha-detalle-view" style="display:none;">
+                    <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+                        <button class="btn-admin" onclick="volverNomina()">← Volver a la nómina</button>
+                        <button class="btn-admin btn-admin-success" onclick="descargarPDF()">⬇️ Descargar PDF</button>
+                    </div>
+                    <div id="ficha-pdf-area" style="background:white; border-radius:12px; box-shadow:var(--shadow-lg); padding:0; border:1px solid var(--border); overflow:hidden;">
+                        <!-- Planilla -->
+                        <div id="hoja-planilla" style="background:white; padding:40px 36px; font-family:'Inter', sans-serif; color:#0f1f17; position:relative; min-height:800px;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:3px double #0a4e30; padding-bottom:18px; margin-bottom:24px;">
+                                <img src="logo-recibar1.png" alt="" style="width:90px; height:90px; object-fit:contain; padding:8px; background:white; border-radius:18px; box-shadow:0 2px 10px rgba(0,0,0,0.12);">
+                                <div style="text-align:center; flex:1; margin:0 20px;">
+                                    <h1 style="font-size:1.3rem; font-weight:800; letter-spacing:0.04em; margin:10px 0 6px;">FICHA DEL EMPLEADO (A)</h1>
+                                    <p style="font-size:0.85rem; text-transform:uppercase; letter-spacing:0.12em; font-weight:600; color:#0f6b43;">RECIBAR C.A · Corporación de Reciclaje</p>
+                                </div>
+                                <img src="logo-recibar2.png" alt="" style="width:90px; height:90px; object-fit:contain; padding:8px; background:white; border-radius:18px; box-shadow:0 2px 10px rgba(0,0,0,0.12);">
+                            </div>
+                            <div id="planilla-contenido"></div>
+                            <div style="margin-top:60px; display:flex; justify-content:space-around; padding-top:24px; border-top:1px solid #cdd8d1;">
+                                <div style="text-align:center; width:40%;">
+                                    <div style="border-top:1px solid #0f1f17; padding-top:6px; font-size:0.78rem;">Firma del Empleado (a)</div>
+                                </div>
+                                <div style="text-align:center; width:40%;">
+                                    <div style="border-top:1px solid #0f1f17; padding-top:6px; font-size:0.78rem;">Firma Talento Humano / Sello</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== TAB 3: GRÁFICAS ===== -->
+            <div id="admin-graficas" class="admin-panel" style="display:none;">
+                <div id="filtros-graficas" style="background:var(--white); border-radius:16px; box-shadow:var(--shadow-lg); padding:20px; border:1px solid var(--border); margin-bottom:18px;">
+                    <h3 style="font-size:1rem; color:var(--primary-darker); font-weight:700; margin-bottom:12px;">🔎 Filtros</h3>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px;">
+                        <div>
+                            <label style="font-size:0.78rem; font-weight:600; color:var(--text-soft); margin-bottom:6px; display:block;">Rango de edad (empleados)</label>
+                            <select id="filtro-edad" onchange="renderGraficas()" style="width:100%; padding:9px 12px; border:1.5px solid var(--border); border-radius:9px; font-family:inherit; font-size:0.85rem;">
+                                <option value="todas">Todas las edades</option>
+                                <option value="18-25">18 a 25 años</option>
+                                <option value="26-35">26 a 35 años</option>
+                                <option value="36-45">36 a 45 años</option>
+                                <option value="46-60">46 a 60 años</option>
+                                <option value="60+">Mayores de 60</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.78rem; font-weight:600; color:var(--text-soft); margin-bottom:6px; display:block;">Edad de hijos (filtro hijos)</label>
+                            <select id="filtro-edad-hijos" onchange="renderGraficas()" style="width:100%; padding:9px 12px; border:1.5px solid var(--border); border-radius:9px; font-family:inherit; font-size:0.85rem;">
+                                <option value="todas">Todas las edades</option>
+                                <option value="0-5">0 a 5 años</option>
+                                <option value="6-10">6 a 10 años</option>
+                                <option value="10-15">10 a 15 años</option>
+                                <option value="16-18">16 a 18 años</option>
+                                <option value="18+">Mayores de 18</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.78rem; font-weight:600; color:var(--text-soft); margin-bottom:6px; display:block;">Sexo</label>
+                            <select id="filtro-sexo" onchange="renderGraficas()" style="width:100%; padding:9px 12px; border:1.5px solid var(--border); border-radius:9px; font-family:inherit; font-size:0.85rem;">
+                                <option value="todos">Ambos</option>
+                                <option value="femenino">Femenino</option>
+                                <option value="masculino">Masculino</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:18px;">
+                    <div class="card-graf"><h4>Nivel de Estudio</h4><canvas id="chart-estudios"></canvas></div>
+                    <div class="card-graf"><h4>Distribución por Sexo</h4><canvas id="chart-sexo"></canvas></div>
+                    <div class="card-graf"><h4>Estado Civil</h4><canvas id="chart-estado-civil"></canvas></div>
+                    <div class="card-graf"><h4>Distribución por Edad (empleados)</h4><canvas id="chart-edades"></canvas></div>
+                    <div class="card-graf"><h4>Cantidad de Hijos por empleado</h4><canvas id="chart-hijos"></canvas></div>
+                    <div class="card-graf"><h4>Sexo de Hijos (filtrado por edad)</h4><canvas id="chart-sexo-hijos"></canvas></div>
+                    <div class="card-graf"><h4>Sexo de Parejas</h4><canvas id="chart-sexo-pareja"></canvas></div>
+                    <div class="card-graf"><h4>Sexo de Progenitores</h4><canvas id="chart-sexo-prog"></canvas></div>
+                    <div class="card-graf"><h4>Condiciones de Salud / Discapacidad</h4><canvas id="chart-disc"></canvas></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const ADMIN_EMAIL = 'recibartalentohumano@gmail.com';
-        const ADMIN_PASSWORD = 'Recibar.2026';
+        // NOTA: el acceso de administrador sigue en modo demo (sin validación real).
+        // No guardes contraseñas en este archivo: es visible para cualquiera que abra la página.
 
         const loginScreen = document.getElementById('login-screen');
         const fichaScreen = document.getElementById('ficha-screen');
@@ -1418,17 +1717,13 @@
         document.getElementById('form-admin').addEventListener('submit', function(e) {
             e.preventDefault();
             hideMessages();
-            const email = document.getElementById('email').value.trim().toLowerCase();
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value.trim().toLowerCase() || 'administrador';
 
-            if (email === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD) {
-                sessionStorage.setItem('rol', 'administrador');
-                sessionStorage.setItem('email', email);
-                showSuccess('Acceso de administrador concedido...');
-                setTimeout(() => mostrarAdmin(email), 600);
-            } else {
-                showError('Correo o contraseña incorrectos. Verifique e intente nuevamente.');
-            }
+            // Acceso directo (modo demo) — con solo pulsar el botón entra al panel
+            sessionStorage.setItem('rol', 'administrador');
+            sessionStorage.setItem('email', email);
+            showSuccess('Acceso de administrador concedido...');
+            setTimeout(() => mostrarAdmin(email), 400);
         });
 
         function mostrarFicha(cedula) {
@@ -1442,7 +1737,7 @@
         function mostrarAdmin(email) {
             loginScreen.style.display = 'none';
             fichaScreen.classList.remove('show');
-            adminScreen.style.display = 'flex';
+            adminScreen.style.display = 'block';
             document.getElementById('admin-email-mostrado').textContent = email;
         }
 
@@ -1718,6 +2013,14 @@
                         <input type="tel" name="${tipo}_telefono_${id}" placeholder="0412-0000000">
                     </div>
                     <div class="form-group">
+                        <label>Sexo</label>
+                        <select name="${tipo}_sexo_${id}">
+                            <option value="">Seleccione...</option>
+                            <option value="femenino">Femenino</option>
+                            <option value="masculino">Masculino</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Fecha de Nacimiento</label>
                         <input type="date" name="${tipo}_fecha_${id}" onchange="calcularEdadCard(this)">
                     </div>
@@ -1809,12 +2112,232 @@
             edadInput.value = edad >= 0 ? edad : '';
         }
 
-        // Guardar ficha
-        document.getElementById('ficha-form').addEventListener('submit', function(e) {
+        // ============================================================
+        // PERSISTENCIA DE DATOS — SUPABASE
+        // ============================================================
+        // ÚNICO LUGAR QUE DEBES EDITAR:
+        // Supabase → tu proyecto → Project Settings → API
+        //   · Project URL      → SUPABASE_URL
+        //   · anon public key  → SUPABASE_ANON_KEY
+        // Nunca pegues aquí la clave "service_role" (es secreta).
+        const SUPABASE_URL = 'PEGA_AQUI_TU_PROJECT_URL';
+        const SUPABASE_ANON_KEY = 'sb_publishable_nhN9U0Ds9ctoXBtKBpUg3w_yanQdV0k';
+
+        let supabaseClient = null;
+        // Copia en memoria de las fichas ya traídas de Supabase.
+        // El panel (tabla, nómina y gráficas) sigue leyendo de forma
+        // síncrona con getFichas(), pero la fuente real es la nube.
+        let fichasCache = [];
+
+        function supabaseConfigurado() {
+            return !!window.supabase &&
+                SUPABASE_URL.startsWith('https://') &&
+                SUPABASE_ANON_KEY.length > 30;
+        }
+
+        function getSupabase() {
+            if (!supabaseConfigurado()) return null;
+            if (!supabaseClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+            return supabaseClient;
+        }
+
+        function textoONull(v) {
+            const t = (v ?? '').toString().trim();
+            return t === '' ? null : t;
+        }
+        function enteroONull(v) {
+            const n = parseInt(v, 10);
+            return Number.isNaN(n) ? null : n;
+        }
+
+        // Objeto de la ficha (como lo usa esta página) → fila de la tabla public.fichas
+        function fichaAFila(data) {
+            return {
+                cedula: (data.cedula_ficha || data._cedula || '').toString(),
+                nombres: textoONull(data.nombres),
+                estado_civil: textoONull(data.estado_civil),
+                sexo: textoONull(data.sexo),
+                telefonos: Array.isArray(data.telefonos) ? data.telefonos : [],
+                lugar_nacimiento: textoONull(data.lugar_nacimiento),
+                fecha_nacimiento: textoONull(data.fecha_nacimiento),
+                edad: enteroONull(data.edad),
+                nivel_estudio: textoONull(data.nivel_estudio),
+                correo: textoONull(data.correo),
+                municipio: textoONull(data.municipio),
+                municipio_otro: textoONull(data.municipio_otro),
+                parroquia: textoONull(data.parroquia),
+                parroquia_otro: textoONull(data.parroquia_otro),
+                comuna: textoONull(data.comuna),
+                comuna_otro: textoONull(data.comuna_otro),
+                direccion: textoONull(data.direccion),
+                condicion_salud: textoONull(data.condicion_salud || data.tiene_condicion) || 'no',
+                condicion_cual: textoONull(data.condicion_cual),
+                condicion_tipo: textoONull(data.condicion_tipo || data.tipo_condicion),
+                condicion_tratada: textoONull(data.condicion_tratada || data.es_tratada),
+                condicion_requiere: textoONull(data.condicion_requiere || data.depende_tratamiento),
+                condicion_tratamiento: textoONull(data.condicion_tratamiento || data.tratamiento_cual),
+                condicion_porvida: textoONull(data.condicion_porvida || data.es_por_vida),
+                condicion_tiempo: textoONull(data.condicion_tiempo || data.tiempo_tratamiento),
+                familiares: data.familiares || { progenitores: [], pareja: [], hijos: [] },
+                datos: data,
+                fecha_registro: data._fecha_registro || new Date().toISOString()
+            };
+        }
+
+        // Fila de Supabase → objeto de ficha (como lo espera esta página)
+        function filaAFicha(row) {
+            const base = (row && row.datos) ? row.datos : {};
+            return {
+                ...base,
+                cedula_ficha: row.cedula,
+                _cedula: row.cedula,
+                nombres: row.nombres ?? base.nombres ?? '',
+                estado_civil: row.estado_civil ?? base.estado_civil ?? '',
+                sexo: row.sexo ?? base.sexo ?? '',
+                telefonos: Array.isArray(row.telefonos) ? row.telefonos : (base.telefonos || []),
+                lugar_nacimiento: row.lugar_nacimiento ?? base.lugar_nacimiento ?? '',
+                fecha_nacimiento: row.fecha_nacimiento ?? base.fecha_nacimiento ?? '',
+                edad: row.edad ?? base.edad ?? '',
+                nivel_estudio: row.nivel_estudio ?? base.nivel_estudio ?? '',
+                correo: row.correo ?? base.correo ?? '',
+                municipio: row.municipio ?? base.municipio ?? '',
+                municipio_otro: row.municipio_otro ?? base.municipio_otro ?? '',
+                parroquia: row.parroquia ?? base.parroquia ?? '',
+                parroquia_otro: row.parroquia_otro ?? base.parroquia_otro ?? '',
+                comuna: row.comuna ?? base.comuna ?? '',
+                comuna_otro: row.comuna_otro ?? base.comuna_otro ?? '',
+                direccion: row.direccion ?? base.direccion ?? '',
+                condicion_salud: row.condicion_salud ?? base.condicion_salud ?? 'no',
+                condicion_cual: row.condicion_cual ?? base.condicion_cual ?? '',
+                condicion_tipo: row.condicion_tipo ?? base.condicion_tipo ?? '',
+                condicion_tratada: row.condicion_tratada ?? base.condicion_tratada ?? '',
+                condicion_requiere: row.condicion_requiere ?? base.condicion_requiere ?? '',
+                condicion_tratamiento: row.condicion_tratamiento ?? base.condicion_tratamiento ?? '',
+                condicion_porvida: row.condicion_porvida ?? base.condicion_porvida ?? '',
+                condicion_tiempo: row.condicion_tiempo ?? base.condicion_tiempo ?? '',
+                familiares: row.familiares || base.familiares || { progenitores: [], pareja: [], hijos: [] },
+                _fecha_registro: row.fecha_registro || base._fecha_registro || null
+            };
+        }
+
+        // El panel sigue usando getFichas() igual que antes (lee la copia en memoria)
+        function getFichas() {
+            return fichasCache;
+        }
+
+        async function cargarFichasDesdeSupabase() {
+            const client = getSupabase();
+            if (!client) {
+                fichasCache = [];
+                console.warn('[Supabase] Falta configurar SUPABASE_URL / SUPABASE_ANON_KEY en index.html');
+                return fichasCache;
+            }
+            const { data, error } = await client
+                .from('fichas')
+                .select('*')
+                .order('cedula', { ascending: true });
+            if (error) {
+                console.error('[Supabase] Error al cargar fichas:', error);
+                alert('No se pudieron cargar las fichas desde Supabase.\n\n' + (error.message || error));
+                return fichasCache;
+            }
+            fichasCache = (data || []).map(filaAFicha);
+            return fichasCache;
+        }
+
+        async function guardarFichaEnSupabase(data) {
+            const client = getSupabase();
+            if (!client) {
+                throw new Error('Supabase no está configurado: pega tu Project URL y tu anon key en index.html (busca SUPABASE_URL).');
+            }
+            const fila = fichaAFila(data);
+            if (!fila.cedula) throw new Error('La ficha no tiene cédula.');
+            const { data: guardada, error } = await client
+                .from('fichas')
+                .upsert(fila, { onConflict: 'cedula' })
+                .select()
+                .single();
+            if (error) throw error;
+            const ficha = filaAFicha(guardada);
+            const idx = fichasCache.findIndex(f => (f.cedula_ficha || '').toString() === ficha.cedula_ficha.toString());
+            if (idx >= 0) fichasCache[idx] = ficha; else fichasCache.push(ficha);
+            return ficha;
+        }
+
+        async function eliminarFichaEnSupabase(cedula) {
+            const client = getSupabase();
+            if (!client) {
+                throw new Error('Supabase no está configurado: pega tu Project URL y tu anon key en index.html (busca SUPABASE_URL).');
+            }
+            const { error } = await client.from('fichas').delete().eq('cedula', cedula.toString());
+            if (error) throw error;
+            fichasCache = fichasCache.filter(f => (f.cedula_ficha || '').toString() !== cedula.toString());
+        }
+
+        async function recargarFichas() {
+            await cargarFichasDesdeSupabase();
+            const activa = document.querySelector('.admin-tab.active')?.dataset.adminTab || 'tabla';
+            if (activa === 'tabla') renderTablaFichas();
+            if (activa === 'vistaprevia') renderNomina();
+            if (activa === 'graficas') renderGraficas();
+        }
+
+        document.getElementById('ficha-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const formData = new FormData(this);
             const data = Object.fromEntries(formData.entries());
-            console.log('Datos de la ficha:', data);
+
+            // Construir familiares agrupados
+            const familiares = { progenitores: [], pareja: [], hijos: [] };
+            ['progenitores', 'pareja', 'hijos'].forEach(tipo => {
+                const count = contadores[tipo];
+                for (let i=1; i<=count; i++) {
+                    const nombre = formData.get(`${tipo}_nombre_${i}`);
+                    if (!nombre) continue;
+                    familiares[tipo].push({
+                        nombre,
+                        cedula: formData.get(`${tipo}_cedula_${i}`) || '',
+                        telefono: formData.get(`${tipo}_telefono_${i}`) || '',
+                        sexo: formData.get(`${tipo}_sexo_${i}`) || '',
+                        fecha_nac: formData.get(`${tipo}_fecha_${i}`) || '',
+                        edad: formData.get(`${tipo}_edad_${i}`) || '',
+                        ano_estudia: formData.get(`${tipo}_ano_${i}`) || '',
+                        discapacidad: formData.get(`${tipo}_discapacidad_${i}`) || 'no',
+                        disc_cual: formData.get(`${tipo}_disc_cual_${i}`) || '',
+                        disc_tratada: formData.get(`${tipo}_disc_tratada_${i}`) || '',
+                        disc_requiere: formData.get(`${tipo}_disc_requiere_${i}`) || '',
+                        disc_tratamiento: formData.get(`${tipo}_disc_tratamiento_${i}`) || '',
+                    });
+                }
+            });
+            data.familiares = familiares;
+            data.telefonos = [];
+            document.querySelectorAll('#telefonos-lista input[type="tel"]').forEach(inp => {
+                if (inp.value) data.telefonos.push(inp.value);
+            });
+            data._fecha_registro = new Date().toISOString();
+            data._cedula = (data.cedula_ficha || '').toString();
+
+            // Normalizar condición de salud: el formulario usa otros nombres
+            // (tiene_condicion, tipo_condicion...) y el panel admin espera estos:
+            data.condicion_salud = data.tiene_condicion || 'no';
+            data.condicion_tipo = data.tipo_condicion || '';
+            data.condicion_tratada = data.es_tratada || '';
+            data.condicion_requiere = data.depende_tratamiento || '';
+            data.condicion_tratamiento = data.tratamiento_cual || '';
+            data.condicion_porvida = data.es_por_vida || '';
+            data.condicion_tiempo = data.tiempo_tratamiento || '';
+
+            // Guardar o actualizar en Supabase (si la cédula ya existe, se actualiza)
+            try {
+                await guardarFichaEnSupabase(data);
+            } catch (err) {
+                console.error('[Supabase] Error al guardar la ficha:', err);
+                alert('No se pudo guardar la ficha en Supabase.\n\n' + (err.message || err) + '\n\nVerifica tu conexión y que ya pegaste la URL y la anon key en el archivo.');
+                return;
+            }
 
             const banner = document.getElementById('success-banner');
             banner.classList.add('show');
@@ -1857,6 +2380,464 @@
             }
         }
 
+
+        // ===================== PANEL ADMIN JS =====================
+
+        // ===== Datos de ejemplo =====
+        function seedEjemplos() {
+            // Forzamos siempre los ejemplos para que se vean datos en la tabla/gráficas
+            const ejemplos = [
+                {
+                    cedula_ficha:'12345678', nombres:'María José Pérez González', estado_civil:'casado', sexo:'femenino',
+                    lugar_nacimiento:'Barcelona, Anzoátegui', fecha_nacimiento:'1990-05-14', edad:34,
+                    nivel_estudio:'universitario', correo:'maria.perez@recibar.com', municipio:'simon_bolivar',
+                    parroquia:'El Carmen', comuna:'Comuna Sur', direccion:'Av. Principal, Edif. Verde, Apto 3B',
+                    condicion_salud:'no', telefonos:['0414-1234567','0424-7654321'],
+                    familiares:{
+                        progenitores:[
+                            {nombre:'Carlos Pérez',cedula:'5678901',telefono:'0414-9876543',sexo:'masculino',fecha_nac:'1960-03-10',edad:64,discapacidad:'no'},
+                            {nombre:'Ana González',cedula:'6789012',telefono:'0414-8765432',sexo:'femenino',fecha_nac:'1962-08-22',edad:62,discapacidad:'no'}
+                        ],
+                        pareja:[{nombre:'Luis Rodríguez',cedula:'11223344',telefono:'0424-1122334',sexo:'masculino',fecha_nac:'1988-11-02',edad:36,discapacidad:'no'}],
+                        hijos:[
+                            {nombre:'Ana Sofía Rodríguez',cedula:'',telefono:'',sexo:'femenino',fecha_nac:'2014-07-12',edad:10,discapacidad:'no',ano_estudia:'5to grado'},
+                            {nombre:'Luis Miguel Rodríguez',cedula:'',telefono:'',sexo:'masculino',fecha_nac:'2018-02-20',edad:6,discapacidad:'no',ano_estudia:'1er grado'}
+                        ]
+                    },
+                    _fecha_registro: new Date().toISOString(), _cedula:'12345678'
+                },
+                {
+                    cedula_ficha:'9876543', nombres:'Pedro Rafael Martínez', estado_civil:'soltero', sexo:'masculino',
+                    lugar_nacimiento:'Lechería, Anzoátegui', fecha_nacimiento:'1985-10-03', edad:39,
+                    nivel_estudio:'bachiller', correo:'', municipio:'simon_bolivar',
+                    parroquia:'El Morro', comuna:'Comuna Costa Verde', direccion:'Calle 5, Casa 12, Urb. Playa',
+                    condicion_salud:'si', condicion_cual:'Hipertensión arterial', condicion_tipo:'condicion', condicion_tratada:'si', condicion_requiere:'si', condicion_tratamiento:'Medicación diaria', condicion_porvida:'si',
+                    telefonos:['0412-5551122'],
+                    familiares:{
+                        progenitores:[{nombre:'Rosa Martínez',cedula:'4567890',telefono:'0414-4455667',sexo:'femenino',fecha_nac:'1958-05-18',edad:66,discapacidad:'si', disc_cual:'Problemas de visión'}],
+                        pareja:[],
+                        hijos:[{nombre:'Andrea Martínez',cedula:'',telefono:'',sexo:'femenino',fecha_nac:'2010-04-01',edad:14,discapacidad:'no',ano_estudia:'3er año'}]
+                    },
+                    _fecha_registro: new Date().toISOString(), _cedula:'9876543'
+                },
+                {
+                    cedula_ficha:'15123456', nombres:'Yusleidy Carolina Silva', estado_civil:'concubino', sexo:'femenino',
+                    lugar_nacimiento:'Puerto La Cruz, Anzoátegui', fecha_nacimiento:'1995-01-22', edad:29,
+                    nivel_estudio:'tsu', correo:'yusleidy.silva@recibar.com', municipio:'simon_bolivar',
+                    parroquia:'Cruz Verde', comuna:'Comuna Centro', direccion:'Calle Libertad, Qta. Yuly',
+                    condicion_salud:'no', telefonos:['0424-8889999'],
+                    familiares:{
+                        progenitores:[{nombre:'José Silva',cedula:'3456789',telefono:'0414-2223344',sexo:'masculino',fecha_nac:'1965-12-01',edad:59,discapacidad:'no'}],
+                        pareja:[{nombre:'Jean Carlos Herrera',cedula:'16234567',telefono:'0412-1123344',sexo:'masculino',fecha_nac:'1993-09-14',edad:31,discapacidad:'no'}],
+                        hijos:[
+                            {nombre:'Matías Herrera',cedula:'',telefono:'',sexo:'masculino',fecha_nac:'2016-03-15',edad:8,discapacidad:'no',ano_estudia:'3er grado'},
+                            {nombre:'Valentina Herrera',cedula:'',telefono:'',sexo:'femenino',fecha_nac:'2020-11-30',edad:4,discapacidad:'no'},
+                            {nombre:'Diego Herrera',cedula:'',telefono:'',sexo:'masculino',fecha_nac:'2022-06-08',edad:2,discapacidad:'no'}
+                        ]
+                    },
+                    _fecha_registro: new Date().toISOString(), _cedula:'15123456'
+                },
+                {
+                    cedula_ficha:'20123456', nombres:'Jorge Luis Rojas', estado_civil:'casado', sexo:'masculino',
+                    lugar_nacimiento:'El Tigre, Anzoátegui', fecha_nacimiento:'1978-07-19', edad:46,
+                    nivel_estudio:'secundaria', correo:'jorge.rojas@recibar.com', municipio:'simon_bolivar',
+                    parroquia:'Pozuelos', comuna:'Comuna Industrial', direccion:'Urb. Industrial, Calle 3, Casa 8',
+                    condicion_salud:'no', telefonos:['0414-3332211','0412-7788999'],
+                    familiares:{
+                        progenitores:[],
+                        pareja:[{nombre:'Carmen García',cedula:'12111222',telefono:'0414-7778899',sexo:'femenino',fecha_nac:'1980-04-25',edad:44,discapacidad:'no'}],
+                        hijos:[
+                            {nombre:'Jorge Rojas Jr.',cedula:'',telefono:'',sexo:'masculino',fecha_nac:'2005-05-05',edad:19,discapacidad:'no'},
+                            {nombre:'Carmen Victoria Rojas',cedula:'',telefono:'',sexo:'femenino',fecha_nac:'2009-02-10',edad:15,discapacidad:'no',ano_estudia:'4to año'}
+                        ]
+                    },
+                    _fecha_registro: new Date().toISOString(), _cedula:'20123456'
+                },
+                {
+                    cedula_ficha:'25987654', nombres:'Katherine Andreína Gómez', estado_civil:'viudo', sexo:'femenino',
+                    lugar_nacimiento:'Anaco, Anzoátegui', fecha_nacimiento:'1988-12-08', edad:36,
+                    nivel_estudio:'primaria', correo:'', municipio:'otro', municipio_otro:'Guanta',
+                    parroquia:'', comuna:'', direccion:'Sector El Centro, Guanta',
+                    condicion_salud:'si', condicion_cual:'Asma', condicion_tipo:'condicion', condicion_tratada:'si', condicion_requiere:'no', condicion_porvida:'si',
+                    telefonos:['0424-6677888'],
+                    familiares:{
+                        progenitores:[
+                            {nombre:'Miguel Gómez',cedula:'2233445',telefono:'0414-5566778',sexo:'masculino',fecha_nac:'1955-02-02',edad:69,discapacidad:'no'},
+                            {nombre:'Mercedes de Gómez',cedula:'3344556',telefono:'0414-6677889',sexo:'femenino',fecha_nac:'1957-09-09',edad:67,discapacidad:'si', disc_cual:'Artritis'}
+                        ],
+                        pareja:[],
+                        hijos:[{nombre:'Daniela Gómez',cedula:'',telefono:'',sexo:'femenino',fecha_nac:'2012-12-12',edad:12,discapacidad:'no',ano_estudia:'1er año'}]
+                    },
+                    _fecha_registro: new Date().toISOString(), _cedula:'25987654'
+                }
+            ];
+            return ejemplos; // Desactivado a propósito: los ejemplos ya no se escriben en Supabase.
+        }
+
+        // Tabs admin
+        function switchAdminTab(tab) {
+            document.querySelectorAll('.admin-panel').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('admin-'+tab).style.display = 'block';
+            document.querySelector(`.admin-tab[data-admin-tab="${tab}"]`).classList.add('active');
+            if (tab === 'tabla') renderTablaFichas();
+            if (tab === 'vistaprevia') { volverNomina(); }
+            if (tab === 'graficas') renderGraficas();
+        }
+
+        // ===== TABLA =====
+        function renderTablaFichas() {
+            const fichas = getFichas();
+            fichas.sort((a,b) => parseInt(a.cedula_ficha||0) - parseInt(b.cedula_ficha||0));
+            const busqueda = (document.getElementById('buscador-fichas')?.value || '').toLowerCase().trim();
+            const filtradas = busqueda ? fichas.filter(f =>
+                (f.cedula_ficha||'').toLowerCase().includes(busqueda) ||
+                (f.nombres||'').toLowerCase().includes(busqueda)) : fichas;
+
+            document.getElementById('contador-fichas').textContent = `${filtradas.length} registro(s)`;
+            const tbody = document.getElementById('tabla-fichas-body');
+            tbody.innerHTML = '';
+            if (filtradas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="15" style="text-align:center; padding:40px; color:var(--text-muted); font-style:italic;">No hay fichas registradas aún.</td></tr>`;
+                return;
+            }
+            filtradas.forEach((f, idx) => {
+                const prog = (f.familiares?.progenitores||[]).length;
+                const par  = (f.familiares?.pareja||[]).length;
+                const hij  = (f.familiares?.hijos||[]).length;
+                const tel  = (f.telefonos||[]).join(', ');
+                const cond = f.condicion_salud === 'si' ?
+                    `<span style="color:var(--accent-dark);font-weight:600;">Sí</span> · ${(f.condicion_cual||'').slice(0,20)}` : 'No';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight:600;">${f.cedula_ficha||'—'}</td>
+                    <td>${f.nombres||'—'}</td>
+                    <td>${(f.estado_civil||'—').charAt(0).toUpperCase()+(f.estado_civil||'—').slice(1)}</td>
+                    <td>${f.sexo? f.sexo.charAt(0).toUpperCase()+f.sexo.slice(1):'—'}</td>
+                    <td style="font-size:0.74rem;">${tel||'—'}</td>
+                    <td>${f.fecha_nacimiento||'—'}</td>
+                    <td style="text-align:center;">${f.edad||'—'}</td>
+                    <td>${(f.nivel_estudio||'—').charAt(0).toUpperCase()+(f.nivel_estudio||'—').slice(1)}</td>
+                    <td style="font-size:0.74rem;">${f.correo||'—'}</td>
+                    <td>${f.municipio==='otro'? (f.municipio_otro||'—') : (f.municipio||'—').replace('_',' ')}</td>
+                    <td>${cond}</td>
+                    <td style="text-align:center;">${prog}</td>
+                    <td style="text-align:center;">${par?'Sí':'No'}</td>
+                    <td style="text-align:center;">${hij}</td>
+                    <td style="white-space:nowrap; text-align:center;">
+                        <button class="btn-admin btn-admin-view" onclick="verFichaAdmin('${f.cedula_ficha}')">👁 Ver</button>
+                        <button class="btn-admin btn-admin-danger" onclick="eliminarFila('${f.cedula_ficha}')">🗑 Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function eliminarFila(cedula) {
+            if (!confirm('⚠️ ¿Está seguro que desea ELIMINAR esta ficha?\n\nEsta acción no se puede deshacer y se perderán todos los datos del trabajador.')) return;
+            try {
+                await eliminarFichaEnSupabase(cedula);
+            } catch (err) {
+                console.error('[Supabase] Error al eliminar la ficha:', err);
+                alert('No se pudo eliminar la ficha de Supabase.\n\n' + (err.message || err));
+                return;
+            }
+            renderTablaFichas();
+        }
+
+        function exportarExcel() {
+            const fichas = getFichas();
+            fichas.sort((a,b) => parseInt(a.cedula_ficha||0) - parseInt(b.cedula_ficha||0));
+            // CSV compatible con Excel (UTF-8 BOM)
+            let csv = '\uFEFF';
+            const cols = ['Cédula','Nombres','Estado Civil','Sexo','Teléfonos','Lugar Nacimiento','Fecha Nacimiento','Edad','Nivel Estudio','Correo','Municipio','Parroquia','Comuna','Dirección','Condición','Detalles Condición','#Progenitores','Pareja','#Hijos'];
+            csv += cols.join(',') + '\n';
+            fichas.forEach(f => {
+                const par = (f.familiares?.pareja||[]).length;
+                const prog = (f.familiares?.progenitores||[]).length;
+                const hij = (f.familiares?.hijos||[]).length;
+                const row = [
+                    f.cedula_ficha||'', f.nombres||'', f.estado_civil||'', f.sexo||'',
+                    (f.telefonos||[]).join(' | '), f.lugar_nacimiento||'', f.fecha_nacimiento||'', f.edad||'',
+                    f.nivel_estudio||'', f.correo||'',
+                    f.municipio==='otro'? (f.municipio_otro||'') : f.municipio||'',
+                    f.parroquia_otro||f.parroquia||'',
+                    f.comuna_otro||f.comuna||'',
+                    f.direccion||'',
+                    f.condicion_salud||'no',
+                    f.condicion_cual||'',
+                    prog, par?'Sí':'No', hij
+                ].map(v => `"${(v??'').toString().replace(/"/g,'""').replace(/\n/g,' ')}"`).join(',');
+                csv += row + '\n';
+            });
+            const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fichas_recibar_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // ===== NÓMINA =====
+        let fichaActualCedula = null;
+        function volverNomina() {
+            document.getElementById('nomina-view').style.display = 'block';
+            document.getElementById('ficha-detalle-view').style.display = 'none';
+            renderNomina();
+        }
+        function renderNomina() {
+            const fichas = getFichas();
+            fichas.sort((a,b) => (a.nombres||'').localeCompare(b.nombres||''));
+            const lista = document.getElementById('lista-nomina');
+            if (!fichas.length) {
+                lista.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:40px; font-style:italic;">No hay trabajadores registrados aún.</p>`;
+                return;
+            }
+            lista.innerHTML = '';
+            fichas.forEach(f => {
+                const iniciales = (f.nombres||'?').split(' ').filter(n=>n).slice(0,2).map(n=>n[0]||'').join('').toUpperCase();
+                const card = document.createElement('div');
+                card.className = 'nomina-card';
+                card.onclick = () => verFichaAdmin(f.cedula_ficha);
+                card.innerHTML = `
+                    <div class="nomina-avatar">${iniciales}</div>
+                    <div class="nomina-info">
+                        <h4>${f.nombres||'—'}</h4>
+                        <p>Cédula: <span>${f.cedula_ficha||'—'}</span> · ${f.sexo? f.sexo.charAt(0).toUpperCase()+f.sexo.slice(1):''} · ${f.edad||'?'} años</p>
+                    </div>
+                `;
+                lista.appendChild(card);
+            });
+        }
+
+        function verFichaAdmin(cedula) {
+            fichaActualCedula = cedula;
+            const f = getFichas().find(x => (x.cedula_ficha||'').toString() === cedula.toString());
+            if (!f) return;
+            document.getElementById('nomina-view').style.display = 'none';
+            document.getElementById('ficha-detalle-view').style.display = 'block';
+
+            const prog = f.familiares?.progenitores||[];
+            const par  = f.familiares?.pareja||[];
+            const hij  = f.familiares?.hijos||[];
+
+            let html = `
+                <div class="planilla-section">
+                    <h3>Datos Personales</h3>
+                    <div class="planilla-grid">
+                        <div class="planilla-item full"><span class="planilla-label">Nombres y Apellidos</span><span class="planilla-value">${f.nombres||''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Cédula de Identidad</span><span class="planilla-value">${f.cedula_ficha||''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Estado Civil</span><span class="planilla-value">${(f.estado_civil||'').charAt(0).toUpperCase()+(f.estado_civil||'').slice(1)}</span></div>
+                        <div class="planilla-item full"><span class="planilla-label">Teléfonos</span><span class="planilla-value">${(f.telefonos||[]).join(' · ')||''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Sexo</span><span class="planilla-value">${f.sexo? f.sexo.charAt(0).toUpperCase()+f.sexo.slice(1):''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Lugar de Nacimiento</span><span class="planilla-value">${f.lugar_nacimiento||''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Fecha de Nacimiento</span><span class="planilla-value">${f.fecha_nacimiento||''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Edad</span><span class="planilla-value">${f.edad||''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Nivel de Estudio</span><span class="planilla-value">${(f.nivel_estudio||'').charAt(0).toUpperCase()+(f.nivel_estudio||'').slice(1)}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Correo Electrónico</span><span class="planilla-value">${f.correo||''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Municipio</span><span class="planilla-value">${f.municipio==='otro'? (f.municipio_otro||'') : (f.municipio||'').replace(/_/g,' ')}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Parroquia</span><span class="planilla-value">${f.parroquia_otro||f.parroquia||''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Comuna</span><span class="planilla-value">${f.comuna_otro||f.comuna||''}</span></div>
+                        <div class="planilla-item full"><span class="planilla-label">Dirección detallada</span><span class="planilla-value">${f.direccion||''}</span></div>
+                    </div>
+                </div>
+                <div class="planilla-section">
+                    <h3>Condición de Salud y Discapacidad</h3>
+                    <div class="planilla-grid">
+                        <div class="planilla-item full"><span class="planilla-label">¿Tiene alguna condición?</span><span class="planilla-value">${f.condicion_salud==='si'?'Sí':'No'}</span></div>
+                        ${f.condicion_salud==='si' ? `
+                        <div class="planilla-item"><span class="planilla-label">Especifique</span><span class="planilla-value">${f.condicion_cual||''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">Tipo</span><span class="planilla-value">${(f.condicion_tipo||'').charAt(0).toUpperCase()+(f.condicion_tipo||'').slice(1)}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">¿Es tratada?</span><span class="planilla-value">${(f.condicion_tratada||'').charAt(0).toUpperCase()+(f.condicion_tratada||'').slice(1)}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">¿Requiere tratamiento?</span><span class="planilla-value">${(f.condicion_requiere||'').charAt(0).toUpperCase()+(f.condicion_requiere||'').slice(1)}</span></div>
+                        <div class="planilla-item full"><span class="planilla-label">Tratamiento</span><span class="planilla-value">${f.condicion_tratamiento||''}</span></div>
+                        <div class="planilla-item"><span class="planilla-label">¿Es de por vida?</span><span class="planilla-value">${(f.condicion_porvida||'').charAt(0).toUpperCase()+(f.condicion_porvida||'').slice(1)}</span></div>
+                        ` : ''}
+                    </div>
+                </div>`;
+
+            [['Progenitores','prog',prog],['Pareja','par',par],['Hijos','hij',hij]].forEach(([titulo,clave,lista]) => {
+                if (!lista.length) return;
+                html += `<div class="planilla-section"><h3>Datos de ${titulo}</h3><table class="planilla-tabla"><thead><tr>
+                    <th>N°</th><th>Nombre y Apellido</th><th>Cédula</th><th>Teléfono</th><th>Sexo</th>
+                    <th>Fecha Nac.</th><th>Edad</th>${clave==='hij'?'<th>Año que estudia</th>':''}<th>Discapacidad</th>
+                </tr></thead><tbody>`;
+                lista.forEach((ff,i) => {
+                    html += `<tr>
+                        <td>${i+1}</td>
+                        <td>${ff.nombre||''}</td>
+                        <td>${ff.cedula||''}</td>
+                        <td>${ff.telefono||''}</td>
+                        <td>${ff.sexo? ff.sexo.charAt(0).toUpperCase()+ff.sexo.slice(1) : ''}</td>
+                        <td>${ff.fecha_nac||''}</td>
+                        <td>${ff.edad||''}</td>
+                        ${clave==='hij'?`<td>${ff.ano_estudia||''}</td>`:''}
+                        <td>${ff.discapacidad==='si'?'Sí':'No'}${ff.disc_cual?' · '+ff.disc_cual:''}</td>
+                    </tr>`;
+                });
+                html += `</tbody></table></div>`;
+            });
+            document.getElementById('planilla-contenido').innerHTML = html;
+        }
+
+        function descargarPDF() {
+            window.print();
+        }
+
+        // ===== GRÁFICAS =====
+        let charts = {};
+        function destroyCharts() { Object.values(charts).forEach(c => c?.destroy?.()); charts={}; }
+
+        function filtrarFichas() {
+            const fichas = getFichas();
+            const rangoEdad = document.getElementById('filtro-edad').value;
+            const sexo = document.getElementById('filtro-sexo').value;
+            return fichas.filter(f => {
+                if (sexo !== 'todos' && f.sexo !== sexo) return false;
+                const e = parseInt(f.edad) || 0;
+                if (rangoEdad === '18-25' && !(e>=18 && e<=25)) return false;
+                if (rangoEdad === '26-35' && !(e>=26 && e<=35)) return false;
+                if (rangoEdad === '36-45' && !(e>=36 && e<=45)) return false;
+                if (rangoEdad === '46-60' && !(e>=46 && e<=60)) return false;
+                if (rangoEdad === '60+' && !(e>60)) return false;
+                return true;
+            });
+        }
+        function rangoEdadValida(edad, rango) {
+            if (rango === 'todas') return true;
+            if (!edad && edad!==0) return false;
+            if (rango === '0-5') return edad>=0 && edad<=5;
+            if (rango === '6-10') return edad>=6 && edad<=10;
+            if (rango === '10-15') return edad>=10 && edad<=15;
+            if (rango === '16-18') return edad>=16 && edad<=18;
+            if (rango === '18+') return edad>18;
+            return true;
+        }
+
+        const PALETA = ['#0f6b43','#b8902f','#128251','#d4ac54','#0a4e30','#947423','#34a06a','#e5c06d','#25b87a','#7e5f1c'];
+
+        function makeChart(id, config) {
+            const ctx = document.getElementById(id);
+            if (!ctx) return;
+            if (charts[id]) charts[id].destroy();
+            charts[id] = new Chart(ctx, {
+                ...config,
+                options: {
+                    responsive:true,
+                    maintainAspectRatio:false,
+                    plugins:{ legend:{position:'bottom', labels:{font:{size:11, family:'Inter'}, padding:12} } },
+                    scales: config.type==='bar'? { y:{beginAtZero:true,ticks:{precision:0,font:{size:10}}, grid:{color:'rgba(15,107,67,0.07)'}}, x:{ticks:{font:{size:10}}, grid:{display:false}} } : {}
+                }
+            });
+        }
+
+        function countBy(arr, keyMap) {
+            const counts = {};
+            arr.forEach(x => {
+                const k = keyMap(x);
+                if (k==null) return;
+                counts[k] = (counts[k]||0)+1;
+            });
+            return counts;
+        }
+
+        function renderGraficas() {
+            destroyCharts();
+            const fichas = filtrarFichas();
+            const rangoHijos = document.getElementById('filtro-edad-hijos').value;
+
+            const labels = (c) => Object.keys(c);
+            const data = (c) => Object.values(c);
+            const colors = (c) => labels(c).map((_,i)=>PALETA[i%PALETA.length]);
+
+            // Nivel de estudios
+            const ne = countBy(fichas, f => f.nivel_estudio || 'Sin registro');
+            const labelMap = {analfabetismo:'Analfabetismo',primaria:'Primaria',secundaria:'Secundaria',bachiller:'Bachiller',tsu:'TSU',universitario:'Universitario','Sin registro':'Sin registro'};
+            makeChart('chart-estudios',{type:'doughnut',data:{labels:labels(ne).map(l=>labelMap[l]||l),datasets:[{data:data(ne),backgroundColor:colors(ne),borderWidth:2,borderColor:'#fff'}]}});
+
+            // Sexo
+            const sx = countBy(fichas, f => f.sexo || 'Sin registro');
+            const sxLabels = {femenino:'Femenino',masculino:'Masculino','Sin registro':'Sin registro'};
+            makeChart('chart-sexo',{type:'pie',data:{labels:labels(sx).map(l=>sxLabels[l]||l),datasets:[{data:data(sx),backgroundColor:colors(sx),borderWidth:2,borderColor:'#fff'}]}});
+
+            // Estado civil
+            const ec = countBy(fichas, f => f.estado_civil || 'Sin registro');
+            const ecLabels = {soltero:'Soltero/a',casado:'Casado/a',concubino:'Concubino/a',viudo:'Viudo/a'};
+            makeChart('chart-estado-civil',{type:'bar',data:{labels:labels(ec).map(l=>ecLabels[l]||l),datasets:[{label:'Trabajadores',data:data(ec),backgroundColor:'#0f6b43',borderRadius:8}]}});
+
+            // Edades agrupadas
+            const grupos = {'18-25':0,'26-35':0,'36-45':0,'46-60':0,'60+':0};
+            fichas.forEach(f => {
+                const e = parseInt(f.edad)||0;
+                if (e>=18&&e<=25) grupos['18-25']++;
+                else if (e>=26&&e<=35) grupos['26-35']++;
+                else if (e>=36&&e<=45) grupos['36-45']++;
+                else if (e>=46&&e<=60) grupos['46-60']++;
+                else if (e>60) grupos['60+']++;
+            });
+            makeChart('chart-edades',{type:'bar',data:{labels:Object.keys(grupos),datasets:[{label:'Trabajadores',data:Object.values(grupos),backgroundColor:'#b8902f',borderRadius:8}]}});
+
+            // Cantidad de hijos por empleado
+            const hijCount = {'0 hijos':0,'1 hijo':0,'2 hijos':0,'3 hijos':0,'4+ hijos':0};
+            fichas.forEach(f => {
+                const n = (f.familiares?.hijos||[]).length;
+                if (n===0) hijCount['0 hijos']++;
+                else if (n===1) hijCount['1 hijo']++;
+                else if (n===2) hijCount['2 hijos']++;
+                else if (n===3) hijCount['3 hijos']++;
+                else hijCount['4+ hijos']++;
+            });
+            makeChart('chart-hijos',{type:'bar',data:{labels:Object.keys(hijCount),datasets:[{label:'Trabajadores',data:Object.values(hijCount),backgroundColor:'#128251',borderRadius:8}]}});
+
+            // Sexo de hijos (con filtro edad)
+            const hijosSexo = {Femenino:0,Masculino:0};
+            fichas.forEach(f => (f.familiares?.hijos||[]).forEach(h => {
+                if (!rangoEdadValida(parseInt(h.edad), rangoHijos)) return;
+                if (h.sexo==='femenino') hijosSexo.Femenino++;
+                else if (h.sexo==='masculino') hijosSexo.Masculino++;
+            }));
+            makeChart('chart-sexo-hijos',{type:'doughnut',data:{labels:Object.keys(hijosSexo),datasets:[{data:Object.values(hijosSexo),backgroundColor:colors(hijosSexo),borderWidth:2,borderColor:'#fff'}]}});
+
+            // Sexo parejas
+            const parSex = {Femenino:0,Masculino:0,'Sin pareja':0};
+            fichas.forEach(f => {
+                const ps = f.familiares?.pareja||[];
+                if (ps.length===0) { parSex['Sin pareja']++; return; }
+                ps.forEach(p => {
+                    if (p.sexo==='femenino') parSex.Femenino++;
+                    else if (p.sexo==='masculino') parSex.Masculino++;
+                });
+            });
+            makeChart('chart-sexo-pareja',{type:'pie',data:{labels:Object.keys(parSex),datasets:[{data:Object.values(parSex),backgroundColor:colors(parSex),borderWidth:2,borderColor:'#fff'}]}});
+
+            // Sexo progenitores
+            const progSex = {Femenino:0,Masculino:0};
+            fichas.forEach(f => (f.familiares?.progenitores||[]).forEach(p => {
+                if (p.sexo==='femenino') progSex.Femenino++;
+                else if (p.sexo==='masculino') progSex.Masculino++;
+            }));
+            makeChart('chart-sexo-prog',{type:'doughnut',data:{labels:Object.keys(progSex),datasets:[{data:Object.values(progSex),backgroundColor:colors(progSex),borderWidth:2,borderColor:'#fff'}]}});
+
+            // Condiciones
+            const cond = {'Sin condición':0,'Con condición':0};
+            fichas.forEach(f => {
+                if (f.condicion_salud==='si') cond['Con condición']++;
+                else cond['Sin condición']++;
+            });
+            makeChart('chart-disc',{type:'pie',data:{labels:Object.keys(cond),datasets:[{data:Object.values(cond),backgroundColor:colors(cond),borderWidth:2,borderColor:'#fff'}]}});
+        }
+
+        // Inicializar cuando se abre el admin
+        const __originalMostrarAdmin = mostrarAdmin;
+        mostrarAdmin = async function(email) {
+            __originalMostrarAdmin(email);
+            // Traer las fichas reales desde Supabase (ya no se cargan ejemplos)
+            await cargarFichasDesdeSupabase();
+            switchAdminTab('tabla');
+        };
+
+
         // Restaurar sesión
         window.addEventListener('DOMContentLoaded', () => {
             const rol = sessionStorage.getItem('rol');
@@ -1867,5 +2848,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4cdc2cf9f9a3715',t:'MTc5MjM5MTcwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce2cbeed47c5de',t:'MTc5MjM5NjA0Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
