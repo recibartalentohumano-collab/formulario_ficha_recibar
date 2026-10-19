@@ -513,6 +513,64 @@
         }
         .admin-dashboard h2 { color: var(--primary); margin-bottom: 8px; }
         .admin-dashboard p { color: var(--text-light); margin-bottom: 24px; }
+
+        /* ========== INTRO VIDEO SCREEN ========== */
+        .intro-wrapper {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .intro-wrapper.show { display: flex; }
+
+        .intro-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+
+        .intro-skip {
+            position: absolute;
+            bottom: 28px;
+            right: 28px;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(6px);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.35);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            z-index: 10000;
+            font-family: inherit;
+        }
+        .intro-skip:hover { background: rgba(0,0,0,0.8); }
+        .intro-skip:active { transform: scale(0.97); }
+
+        .intro-brand {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            z-index: 10000;
+            opacity: 0.85;
+        }
+
+        @media (max-width: 600px) {
+            .intro-skip { bottom: 18px; right: 18px; padding: 9px 16px; font-size: 0.82rem; }
+            .intro-brand { top: 16px; left: 16px; font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
@@ -568,6 +626,16 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- ==================== PANTALLA DE VIDEO INTRO (5s) ==================== -->
+    <div id="intro-screen" class="intro-wrapper">
+        <div class="intro-brand">RECIBAR C.A.</div>
+        <video id="intro-video" class="intro-video" playsinline autoplay muted preload="auto">
+            <source src="intro.mp4" type="video/mp4">
+            Tu navegador no soporta la reproducción de video.
+        </video>
+        <button class="intro-skip" id="intro-skip" type="button">Saltar ▶</button>
     </div>
 
     <!-- ==================== FICHA DEL EMPLEADO (a) ==================== -->
@@ -867,9 +935,64 @@
             sessionStorage.setItem('rol', 'trabajador');
             sessionStorage.setItem('cedula', cedula);
 
-            showSuccess('Acceso concedido. Cargando ficha...');
-            setTimeout(() => mostrarFicha(cedula), 600);
+            showSuccess('Acceso concedido...');
+            // Pequeña pausa para mostrar mensaje y luego abrir el video intro
+            setTimeout(() => reproducirIntro(cedula), 400);
         });
+
+        // ========== VIDEO INTRO DE 5 SEGUNDOS ==========
+        const introScreen = document.getElementById('intro-screen');
+        const introVideo  = document.getElementById('intro-video');
+        const introSkip   = document.getElementById('intro-skip');
+
+        function reproducirIntro(cedula) {
+            hideMessages();
+            loginScreen.style.display = 'none';
+            adminScreen.style.display = 'none';
+            fichaScreen.classList.remove('show');
+            introScreen.classList.add('show');
+
+            // Resetear video al principio cada vez
+            try {
+                introVideo.pause();
+                introVideo.currentTime = 0;
+                // Forzar mute (requisito para autoplay en móviles)
+                introVideo.muted = true;
+                const playPromise = introVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(err => {
+                        // Si autoplay falla, intentar una vez más con mute y si no, pasar de frente
+                        console.warn('Autoplay falló:', err);
+                    });
+                }
+            } catch (e) {
+                console.warn('Error al reproducir intro:', e);
+            }
+
+            // Seguridad: después de 7 segundos siempre continuar (por si el video tarda o falla)
+            const safetyTimer = setTimeout(() => {
+                finalizarIntro(cedula);
+            }, 7000);
+
+            // Cuando termine el video, mostrar ficha
+            const onEnded = () => {
+                clearTimeout(safetyTimer);
+                finalizarIntro(cedula);
+            };
+            introVideo.onended = onEnded;
+
+            // Botón saltar
+            introSkip.onclick = () => {
+                clearTimeout(safetyTimer);
+                finalizarIntro(cedula);
+            };
+        }
+
+        function finalizarIntro(cedula) {
+            try { introVideo.pause(); } catch(e) {}
+            introScreen.classList.remove('show');
+            mostrarFicha(cedula);
+        }
 
         // Login Administrador
         document.getElementById('form-admin').addEventListener('submit', function(e) {
