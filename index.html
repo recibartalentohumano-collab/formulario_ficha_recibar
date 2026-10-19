@@ -2457,19 +2457,32 @@
 
         async function cargarSimulacionTemporal() {
             if (!SIMULACION_TEMPORAL_ACTIVA) return;
-            const simuladas = crearFichasSimuladas();
-            for (const ficha of simuladas) {
-                try {
-                    await guardarFichaEnSupabase(ficha);
-                } catch (err) {
-                    // Si Supabase falla, al menos se muestran en pantalla esta vez.
-                    console.warn('[Simulación temporal] No se pudo guardar en Supabase:', ficha.cedula_ficha, err);
-                    const idx = fichasCache.findIndex(f => (f.cedula_ficha || '').toString() === ficha.cedula_ficha);
-                    if (idx >= 0) fichasCache[idx] = ficha; else fichasCache.push(ficha);
+            if (promesaSimulacionTemporal) return promesaSimulacionTemporal;
+            promesaSimulacionTemporal = (async () => {
+                const simuladas = crearFichasSimuladas();
+                for (const ficha of simuladas) {
+                    try {
+                        await guardarFichaEnSupabase(ficha);
+                    } catch (err) {
+                        // Si Supabase falla, al menos se muestran en pantalla esta vez.
+                        console.warn('[Simulación temporal] No se pudo guardar en Supabase:', ficha.cedula_ficha, err);
+                        const idx = fichasCache.findIndex(f => (f.cedula_ficha || '').toString() === ficha.cedula_ficha);
+                        if (idx >= 0) fichasCache[idx] = ficha; else fichasCache.push(ficha);
+                    }
                 }
-            }
-            console.info('[Simulación temporal] 10 fichas ficticias cargadas (cédulas 90000001-90000010).');
+                console.info('[Simulación temporal] 10 fichas ficticias cargadas (cédulas 90000001-90000010).');
+            })();
+            return promesaSimulacionTemporal;
         }
+
+        // TEMPORAL: cargar la simulación apenas se abre la página,
+        // sin necesidad de entrar primero al panel de administrador.
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(async () => {
+                await cargarSimulacionTemporal();
+                if (adminScreen.style.display !== 'none') renderTablaFichas();
+            }, 600);
+        });
 
         document.getElementById('ficha-form').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -3037,5 +3050,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce3c742eab7458',t:'MTc5MjM5NjY5MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce48856b1edaae',t:'MTc5MjM5NzE4NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
