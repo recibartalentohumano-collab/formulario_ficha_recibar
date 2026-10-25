@@ -5951,14 +5951,12 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
         // Los logos se toman tal cual se ven en la interfaz: el de la izquierda y el de la derecha
         function logosDeLaInterfaz() {
-            // Primero los de la pantalla de entrada, luego los del encabezado del administrador
-            const entrada = [...document.querySelectorAll('.header-brand-logo')];
-            if (entrada.length >= 2) return [entrada[0].src, entrada[1].src];
-            const cabecera = [...document.querySelectorAll('.admin-header-logo')];
-            if (cabecera.length >= 2) return [cabecera[0].src, cabecera[1].src];
-            const uno = document.querySelector('img[src*="logo-recibar1"]');
-            const dos = document.querySelector('img[src*="logo-recibar2"]');
-            return [uno ? uno.src : 'logo-recibar1.png', dos ? dos.src : 'logo-recibar2.png'];
+            // Izquierda: logo-recibar1.png · Derecha: logo-recibar2.png
+            const buscar = nombre => {
+                const el = document.querySelector(`img[src*="${nombre}"]`);
+                return el && el.src ? el.src : `${nombre}.png`;
+            };
+            return [buscar('logo-recibar1'), buscar('logo-recibar2')];
         }
 
         function cargarLogoExcel(origen) {
@@ -5990,7 +5988,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                         cx.drawImage(img, 0, 0);
                         const datos = cx.getImageData(0, 0, w, h);
                         const px = datos.data;
-                        const esBlanco = i => px[i] > 236 && px[i + 1] > 236 && px[i + 2] > 236;
+                        const esBlanco = i => px[i] > 232 && px[i + 1] > 232 && px[i + 2] > 232;
+                        const esVacio = i => px[i + 3] < 12;
                         const visto = new Uint8Array(w * h);
                         const cola = [];
                         const meter = (x, y) => {
@@ -5998,7 +5997,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                             const p = y * w + x;
                             if (visto[p]) return;
                             visto[p] = 1;
-                            if (esBlanco(p * 4)) cola.push(p);
+                            const i = p * 4;
+                            if (esBlanco(i) || esVacio(i)) cola.push(p);
                         };
                         for (let x = 0; x < w; x++) { meter(x, 0); meter(x, h - 1); }
                         for (let y = 0; y < h; y++) { meter(0, y); meter(w - 1, y); }
@@ -6006,9 +6006,10 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                         while (cola.length) {
                             const p = cola.pop();
                             const i = p * 4;
-                            if (px[i + 3] === 0) continue;
-                            px[i + 3] = 0;
-                            tocados++;
+                            if (esBlanco(i) && px[i + 3] !== 0) {
+                                px[i + 3] = 0;
+                                tocados++;
+                            }
                             const x = p % w, y = (p - x) / w;
                             meter(x + 1, y); meter(x - 1, y); meter(x, y + 1); meter(x, y - 1);
                         }
@@ -6242,14 +6243,17 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             try {
                 const idIzq = logoIzq ? wb.addImage({ base64: logoIzq, extension: 'png' }) : null;
                 const idDer = logoDer ? wb.addImage({ base64: logoDer, extension: 'png' }) : null;
+                // Ojo: la librería numera los logos desde 0, así que 0 es un número válido
+                const idIzquierdo = (idIzq !== null && idIzq !== undefined) ? idIzq : idDer;
+                const idDerecho = (idDer !== null && idDer !== undefined) ? idDer : idIzq;
                 const poner = (id, columna) => {
-                    if (!id) return;
-                    ws.addImage(id, { tl: { col: columna - 1 + 0.05, row: 0.06 }, ext: { width: LADO, height: LADO }, editAs: 'oneCell' });
+                    if (id === null || id === undefined) return;
+                    ws.addImage(id, { tl: { col: columna - 1 + 0.05, row: 0.36 }, ext: { width: LADO, height: LADO }, editAs: 'oneCell' });
                 };
                 tramos.forEach(([desde, hasta, ancho]) => {
                     if (ancho < 620) return;   // tramos muy angostos: sin logos para no tapar el título
-                    poner(idIzq || idDer, columnaInicialLogo(desde, hasta));
-                    poner(idDer || idIzq, columnaFinalLogo(desde, hasta));
+                    poner(idIzquierdo, columnaInicialLogo(desde, hasta));
+                    poner(idDerecho, columnaFinalLogo(desde, hasta));
                 });
             } catch (e) {
                 console.warn('No se pudieron colocar los logos en el Excel', e);
@@ -7891,5 +7895,5 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ff37b24e89c14d',t:'MTc5MjkxMDI5Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ff452a193588da',t:'MTc5MjkxMDg0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
