@@ -5949,9 +5949,22 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             return EXCEL_COLORES[clave] || EXCEL_COLORES.datos;
         }
 
-        // Los logos se leen del propio sitio y se incrustan dentro del archivo
-        function cargarLogoExcel(nombre) {
-            return fetch(nombre, { cache: 'force-cache' })
+        // Los logos se toman tal cual se ven en la interfaz: el de la izquierda y el de la derecha
+        function logosDeLaInterfaz() {
+            // Primero los de la pantalla de entrada, luego los del encabezado del administrador
+            const entrada = [...document.querySelectorAll('.header-brand-logo')];
+            if (entrada.length >= 2) return [entrada[0].src, entrada[1].src];
+            const cabecera = [...document.querySelectorAll('.admin-header-logo')];
+            if (cabecera.length >= 2) return [cabecera[0].src, cabecera[1].src];
+            const uno = document.querySelector('img[src*="logo-recibar1"]');
+            const dos = document.querySelector('img[src*="logo-recibar2"]');
+            return [uno ? uno.src : 'logo-recibar1.png', dos ? dos.src : 'logo-recibar2.png'];
+        }
+
+        function cargarLogoExcel(origen) {
+            if (!origen) return Promise.resolve(null);
+            if (String(origen).startsWith('data:')) return Promise.resolve(origen);
+            return fetch(origen, { cache: 'force-cache' })
                 .then(r => (r.ok ? r.blob() : null))
                 .then(b => b ? new Promise(res => {
                     const fr = new FileReader();
@@ -5960,6 +5973,61 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                     fr.readAsDataURL(b);
                 }) : null)
                 .catch(() => null);
+        }
+
+        // Deja únicamente el logo: borra el fondo blanco que venga pegado en la imagen
+        // (solo el blanco que toca los bordes, para no agujerear el dibujo del logo)
+        function quitarFondoBlancoLogo(dataUrl) {
+            return new Promise(resolve => {
+                const img = new Image();
+                img.onload = () => {
+                    try {
+                        const w = img.naturalWidth, h = img.naturalHeight;
+                        if (!w || !h) return resolve(dataUrl);
+                        const cv = document.createElement('canvas');
+                        cv.width = w; cv.height = h;
+                        const cx = cv.getContext('2d');
+                        cx.drawImage(img, 0, 0);
+                        const datos = cx.getImageData(0, 0, w, h);
+                        const px = datos.data;
+                        const esBlanco = i => px[i] > 236 && px[i + 1] > 236 && px[i + 2] > 236;
+                        const visto = new Uint8Array(w * h);
+                        const cola = [];
+                        const meter = (x, y) => {
+                            if (x < 0 || y < 0 || x >= w || y >= h) return;
+                            const p = y * w + x;
+                            if (visto[p]) return;
+                            visto[p] = 1;
+                            if (esBlanco(p * 4)) cola.push(p);
+                        };
+                        for (let x = 0; x < w; x++) { meter(x, 0); meter(x, h - 1); }
+                        for (let y = 0; y < h; y++) { meter(0, y); meter(w - 1, y); }
+                        let tocados = 0;
+                        while (cola.length) {
+                            const p = cola.pop();
+                            const i = p * 4;
+                            if (px[i + 3] === 0) continue;
+                            px[i + 3] = 0;
+                            tocados++;
+                            const x = p % w, y = (p - x) / w;
+                            meter(x + 1, y); meter(x - 1, y); meter(x, y + 1); meter(x, y - 1);
+                        }
+                        if (!tocados) return resolve(dataUrl);   // ya venía transparente
+                        cx.putImageData(datos, 0, 0);
+                        resolve(cv.toDataURL('image/png'));
+                    } catch (e) {
+                        resolve(dataUrl);
+                    }
+                };
+                img.onerror = () => resolve(dataUrl);
+                img.src = dataUrl;
+            });
+        }
+
+        async function logoParaExcel(origen) {
+            const base = await cargarLogoExcel(origen);
+            if (!base) return null;
+            return await quitarFondoBlancoLogo(base);
         }
 
         // Arma una hoja con el mismo acabado: logos, título, bandas por grupo, bordes y numeración
@@ -5999,6 +6067,12 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             });
             anchosReales.forEach((w, i) => { ws.getColumn(col(i)).width = w; });
             const anchoPx = i => Math.round(anchosReales[i] * 7 + 5);
+            const anchoColumnaHoja = c => (c >= 2 && c <= totalCols) ? Math.round(anchosReales[c - 2] * 7 + 5) : 60;
+            const tramoAncho = (desde, hasta) => {
+                let t = 0;
+                for (let c = desde; c <= hasta; c++) t += anchoColumnaHoja(c);
+                return t;
+            };
 
             // --- Franja superior clara (se repite a todo lo largo de la sábana) ---
             for (let r = 1; r <= 4; r++) {
@@ -6016,7 +6090,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             for (let i = 0; i < columnas.length; i++) {
                 acumTramo += anchoPx(i);
                 if (acumTramo >= ANCHO_TRAMO || i === columnas.length - 1) {
-                    tramos.push([iniTramo, Math.min(col(i), totalCols - 1)]);
+                    tramos.push([iniTramo, col(i)]);
                     iniTramo = col(i) + 1;
                     acumTramo = 0;
                 }
@@ -6027,14 +6101,15 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 const anchoUlt = anchoPx(Math.max(0, h - 2));
                 if (anchoUlt < 420) {
                     tramos.pop();
-                    tramos[tramos.length - 1][1] = Math.min(totalCols - 1, h);
+                    tramos[tramos.length - 1][1] = h;
                 }
             }
             if (!tramos.length) tramos.push([2, Math.max(2, totalCols - 1)]);
+            tramos.forEach(t => { t[2] = tramoAncho(t[0], t[1]); });
 
             tramos.forEach(([desde, hasta], indice) => {
                 if (hasta < desde) return;
-                const anchoTramo = anchosReales.slice(desde - 2, hasta - 1).reduce((a, w) => a + Math.round(w * 7 + 5), 0);
+                const anchoTramo = tramoAncho(desde, hasta);
                 const tamanoTitulo = anchoTramo < 700 ? 12 : (anchoTramo < 950 ? 14 : 15);
 
                 // Recuadro del tramo
@@ -6143,25 +6218,38 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 };
             }
 
-            // --- Logos: uno en la esquina izquierda, uno al final de cada tramo y uno en la esquina derecha ---
+
+            // --- Logos: el de la izquierda y el de la derecha dentro de cada tramo, sin tocar la columna A ---
+            // Se apoyan en el borde de una columna, ya metidos hacia el centro del recuadro
             const LADO = 52;
-            const agregarLogo = (id, columna, alFinal) => {
-                const anchoCol = (columna >= 2 && columna <= totalCols) ? Math.round(anchosReales[columna - 2] * 7 + 5) : 60;
-                const frac = alFinal ? Math.min(0.95, Math.max(0.02, (anchoCol - LADO) / anchoCol)) : 0.08;
-                ws.addImage(id, {
-                    tl: { col: (columna - 1) + frac, row: 0.06 },
-                    ext: { width: LADO, height: LADO },
-                    editAs: 'oneCell'
-                });
+            const SEPARACION = 42;   // cuánto se meten hacia el centro
+            const columnaInicialLogo = (desde, hasta) => {
+                let suma = 0;
+                for (let c = desde; c <= hasta; c++) {
+                    if (suma >= SEPARACION) return c;
+                    suma += anchoColumnaHoja(c);
+                }
+                return hasta;
+            };
+            const columnaFinalLogo = (desde, hasta) => {
+                let suma = 0;
+                for (let c = hasta; c >= desde; c--) {
+                    suma += anchoColumnaHoja(c);
+                    if (suma >= SEPARACION + LADO) return c;
+                }
+                return desde;
             };
             try {
                 const idIzq = logoIzq ? wb.addImage({ base64: logoIzq, extension: 'png' }) : null;
                 const idDer = logoDer ? wb.addImage({ base64: logoDer, extension: 'png' }) : null;
-                const marcas = [1, ...tramos.slice(0, -1).map(t => t[1]), totalCols];
-                marcas.forEach((columna, i) => {
-                    const id = (i % 2 === 0) ? (idIzq || idDer) : (idDer || idIzq);
+                const poner = (id, columna) => {
                     if (!id) return;
-                    agregarLogo(id, columna, i > 0);
+                    ws.addImage(id, { tl: { col: columna - 1 + 0.05, row: 0.06 }, ext: { width: LADO, height: LADO }, editAs: 'oneCell' });
+                };
+                tramos.forEach(([desde, hasta, ancho]) => {
+                    if (ancho < 620) return;   // tramos muy angostos: sin logos para no tapar el título
+                    poner(idIzq || idDer, columnaInicialLogo(desde, hasta));
+                    poner(idDer || idIzq, columnaFinalLogo(desde, hasta));
                 });
             } catch (e) {
                 console.warn('No se pudieron colocar los logos en el Excel', e);
@@ -6254,9 +6342,10 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 wb.created = hoy;
                 wb.modified = hoy;
 
+                const [origenIzq, origenDer] = logosDeLaInterfaz();
                 const [logoIzq, logoDer] = await Promise.all([
-                    cargarLogoExcel('logo-recibar1.png'),
-                    cargarLogoExcel('logo-recibar2.png')
+                    logoParaExcel(origenIzq),
+                    logoParaExcel(origenDer)
                 ]);
 
                 const logos = { izq: logoIzq, der: logoDer };
@@ -7802,5 +7891,5 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ff21743db295e9',t:'MTc5MjkwOTM4Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ff37b24e89c14d',t:'MTc5MjkxMDI5Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
