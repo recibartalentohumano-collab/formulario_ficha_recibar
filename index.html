@@ -1635,6 +1635,67 @@
         }
         /* Seis columnas: cada dato ocupa las que necesite y las filas siempre van completas */
         .planilla-grid { display:grid; grid-template-columns:repeat(6, 1fr); border:1px solid #0a4e30; border-top:none; }
+
+        /* --- Celda de la fotografía: a la izquierda, los datos en forma de L --- */
+        .planilla-grid--foto { grid-template-columns: 34mm repeat(5, 1fr); grid-auto-rows: minmax(9mm, auto); }
+
+        /* La celda de "Nombres y Apellidos" ocupa toda la fila 1 y dibuja UNA sola línea
+           base que cruza de lado a lado, hasta tocar el borde izquierdo de la tabla. */
+        .planilla-item--base { border-bottom: 1px solid #0a4e30; }
+        /* Las celdas que van justo debajo no vuelven a dibujar esa línea (evita el empalme) */
+        .planilla-item--sin-arriba { border-top: 0 !important; }
+
+        /* El rótulo ocupa exactamente una fila: así su línea inferior es la MISMA
+           que la de "Cédula de Identidad" y continúa de lado a lado. */
+        .planilla-foto-rotulo {
+            grid-column: 1; grid-row: 1;
+            border-right: 1px solid #0a4e30; border-bottom: 1px solid #0a4e30;
+            /* mismo relleno que .planilla-item para que la palabra quede a la misma altura */
+            padding: 6px 8px; display: flex; flex-direction: column; justify-content: flex-start;
+            background: #fff;
+        }
+        /* La foto empieza justo en esa línea y baja hasta la de abajo */
+        .planilla-foto {
+            grid-column: 1; grid-row: 2 / span 4;
+            border-top: 0; border-right: 1px solid #0a4e30; border-bottom: 1px solid #0a4e30;
+            padding: 2px; display: flex; background: #fff; overflow: hidden;
+        }
+        .planilla-foto .foto-marco {
+            flex: 1 1 auto; min-height: 32mm; width: 100%;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            color: #8aa197; font-size: 6pt; letter-spacing: .06em; text-transform: uppercase;
+            background: #f7faf8; overflow: hidden;
+        }
+        /* La imagen nunca toca las líneas: así sus bordes no engrosan la cuadrícula */
+        .planilla-foto .foto-marco img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            border: 0 !important; outline: 0; background: #fff;
+        }
+
+        /* --- Foto del trabajador en el formulario --- */
+        .foto-trabajador {
+            display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+            border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+            background: #f7faf8; margin-bottom: 20px;
+        }
+        .foto-trabajador .foto-miniatura {
+            width: 90px; height: 120px; border-radius: 8px; border: 1px dashed #9fb3a9;
+            background: #fff; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; color: #8aa197; font-size: 11px; text-align: center; flex: 0 0 auto;
+        }
+        .foto-trabajador .foto-miniatura img { width: 100%; height: 100%; object-fit: cover; }
+        .foto-trabajador .foto-miniatura.con-foto { border-style: solid; border-color: #cdd8d1; }
+        .foto-trabajador .foto-textos { flex: 1 1 240px; }
+        .foto-trabajador .foto-textos strong { display: block; font-size: 14.5px; color: #0a4e30; margin-bottom: 3px; }
+        .foto-trabajador .foto-textos p { margin: 0 0 10px; font-size: 12.5px; color: #5b6b63; line-height: 1.5; }
+        .foto-trabajador .foto-botones { display: flex; gap: 8px; flex-wrap: wrap; }
+        .foto-trabajador .foto-estado { font-size: 12.5px; font-weight: 600; margin-top: 8px; min-height: 16px; }
+        .foto-trabajador .foto-estado.ok { color: #0a7a3d; }
+        .foto-trabajador .foto-estado.error { color: #b3261e; }
+        @media print {
+            .planilla-foto-rotulo { padding: 2.6px 7px !important; }
+            .planilla-foto .foto-marco { min-height: 28mm; font-size: 5.4pt; }
+        }
         .planilla-item {
             border-right:1px solid #0a4e30;
             border-bottom:1px solid #0a4e30;
@@ -1766,8 +1827,8 @@
                 float: none !important;
                 width: 100% !important;
                 max-width: 100% !important;
-                /* alto útil de una A4 con estos márgenes (297 - 13 - 12) */
-                min-height: 272mm !important;
+                /* Deja 12 mm de aire al pie para que las firmas nunca se corten al imprimir */
+                min-height: 260mm !important;
                 padding: 0 !important;
                 margin: 0 !important;
                 box-shadow: none !important;
@@ -2398,6 +2459,8 @@
         <symbol id="i-ampliar" viewBox="0 0 24 24"><path d="M9 4H5.5A1.5 1.5 0 0 0 4 5.5V9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15"/></symbol>
         <symbol id="i-cerrar" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
         <symbol id="i-descargar" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="M8 10.5l4 4 4-4"/><path d="M4.5 19.5h15"/></symbol>
+        <symbol id="i-camara" viewBox="0 0 24 24"><rect x="3" y="6.8" width="18" height="13" rx="2.6"/><circle cx="12" cy="13.4" r="3.6"/><path d="M8.6 6.8l1.3-2.3h4.2l1.3 2.3"/></symbol>
+        <symbol id="i-borrar" viewBox="0 0 24 24"><path d="M5 7h14"/><path d="M9.5 7V4.9h5V7"/><path d="M6.9 7l.9 12.1h8.4L17.1 7"/></symbol>
         <symbol id="i-ojo" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12S18 18.2 12 18.2 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.9"/></symbol>
         <symbol id="i-ojo-off" viewBox="0 0 24 24"><path d="M4 4l16 16"/><path d="M9.6 6.3A8.6 8.6 0 0 1 12 5.9c6 0 9.5 6.1 9.5 6.1a17 17 0 0 1-3.3 3.9M6.1 8.2A16.6 16.6 0 0 0 2.5 12S6 18.1 12 18.1c1.2 0 2.3-.2 3.3-.7"/><path d="M10.2 10.3a2.9 2.9 0 0 0 4 4"/></symbol>
         <symbol id="i-editar" viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></symbol>
@@ -2529,6 +2592,23 @@
                 <!-- 1. DATOS PERSONALES -->
                 <div class="section">
                     <h2 class="section-title"><span>1</span> Datos Personales</h2>
+                    <div class="foto-trabajador" id="foto-trabajador">
+                        <div class="foto-miniatura" id="foto-miniatura">Sin foto</div>
+                        <div class="foto-textos">
+                            <strong>Fotografía del trabajador</strong>
+                            <p>Tipo carnet (3 × 4). Se reduce sola antes de guardarse y se ve en tu ficha.</p>
+                            <div class="foto-botones">
+                                <button type="button" class="btn-admin btn-admin-success" id="btn-foto-elegir">
+                                    <svg class="ico ico--sm" aria-hidden="true"><use href="#i-camara"/></svg> Tomar foto / Subir
+                                </button>
+                                <button type="button" class="btn-admin" id="btn-foto-quitar">
+                                    <svg class="ico ico--sm" aria-hidden="true"><use href="#i-borrar"/></svg> Quitar
+                                </button>
+                            </div>
+                            <div class="foto-estado" id="foto-estado"></div>
+                        </div>
+                        <input type="file" id="foto-input" accept="image/*" capture="user" style="display:none">
+                    </div>
                     <div class="grid-2">
                         <div class="form-group full">
                             <label for="nombres">Nombres y Apellidos *</label>
@@ -3752,6 +3832,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 if (oculto) oculto.remove();
                 if (hint) hint.textContent = 'Indica el tipo de nómina del trabajador.';
             }
+
+            // Traer la foto guardada de esta cédula (si ya tiene)
+            cargarFotoEnFormulario(document.getElementById('cedula-ficha')?.value);
         }
 
         // ===== CARGA AUTOMÁTICA AL ENTRAR AL ADMINISTRADOR =====
@@ -4781,6 +4864,10 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 });
 
                 // Reset dirección
+                // Foto: la vista previa se limpia (la guardada se carga al entrar)
+                pintarFotoFormulario(null);
+                ponerEstadoFoto('');
+
                 document.getElementById('otro-municipio-group').style.display = 'none';
                 document.getElementById('parroquia-otro-group').style.display = 'none';
                 document.getElementById('comuna-otro-group').style.display = 'none';
@@ -6202,6 +6289,146 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             return `${dos(hoy.getDate())}-${dos(hoy.getMonth() + 1)}-${hoy.getFullYear()}`;
         }
 
+        // ============================================================
+        // FOTOS DE LOS TRABAJADORES
+        // Las fotos viven en Google Drive (a través del puente de Apps Script).
+        // En Supabase no se guarda nada: solo se piden por cédula cuando hacen falta.
+        // ============================================================
+        const FOTOS_URL = 'https://script.google.com/macros/s/AKfycbwI-yzcJWTxDJFQpyOzZ8YLNLBw80yvlH9rmuOuj9amYE5Y37QcdeGavFsNIGPPH4M60g/exec';
+        const FOTOS_TOKEN = 'RB-fotos-2026-x7K2mQ9p';
+        const FOTO_LADO_MAX = 800;      // píxeles del lado más largo
+        const FOTO_CALIDAD = 0.82;      // compresión JPEG
+        const _fotosCache = new Map();  // cédula -> data URI
+        let fotoTrabajadorDataUri = null;
+
+        function fotoCedula(cedula) { return String(cedula || '').replace(/\D/g, ''); }
+
+        // Reduce y recorta la foto a proporción carnet (3:4) antes de subirla
+        function comprimirImagen(file) {
+            return new Promise((resolve, reject) => {
+                const lector = new FileReader();
+                lector.onerror = () => reject(new Error('No se pudo leer la imagen'));
+                lector.onload = () => {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error('Formato de imagen no válido'));
+                    img.onload = () => {
+                        try {
+                            const objetivo = 3 / 4;
+                            let sx = 0, sy = 0, sw = img.width, sh = img.height;
+                            if (img.width / img.height > objetivo) {
+                                sw = Math.round(img.height * objetivo);
+                                sx = Math.round((img.width - sw) / 2);
+                            } else {
+                                sh = Math.round(img.width / objetivo);
+                                sy = Math.round((img.height - sh) / 2);
+                            }
+                            const escala = Math.min(1, FOTO_LADO_MAX / Math.max(sw, sh));
+                            const lienzo = document.createElement('canvas');
+                            lienzo.width = Math.max(1, Math.round(sw * escala));
+                            lienzo.height = Math.max(1, Math.round(sh * escala));
+                            lienzo.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, lienzo.width, lienzo.height);
+                            resolve(lienzo.toDataURL('image/jpeg', FOTO_CALIDAD));
+                        } catch (e) { reject(e); }
+                    };
+                    img.src = lector.result;
+                };
+                lector.readAsDataURL(file);
+            });
+        }
+
+        async function subirFotoTrabajador(cedula, dataUri) {
+            const clave = fotoCedula(cedula);
+            if (!clave) return { ok: false, error: 'Falta la cédula' };
+            try {
+                const resp = await fetch(FOTOS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ token: FOTOS_TOKEN, cedula: clave, imagen: dataUri }),
+                    redirect: 'follow'
+                });
+                const datos = await resp.json();
+                if (datos.ok) _fotosCache.set(clave, dataUri);
+                return datos;
+            } catch (e) {
+                return { ok: false, error: 'No se pudo conectar con el almacén de fotos' };
+            }
+        }
+
+        async function obtenerFotoTrabajador(cedula, forzar = false) {
+            const clave = fotoCedula(cedula);
+            if (!clave) return null;
+            if (!forzar && _fotosCache.has(clave)) return _fotosCache.get(clave);
+            try {
+                const resp = await fetch(FOTOS_URL + '?token=' + encodeURIComponent(FOTOS_TOKEN) + '&cedula=' + clave, { redirect: 'follow' });
+                const datos = await resp.json();
+                const imagen = datos.ok ? datos.imagen : null;
+                _fotosCache.set(clave, imagen);
+                return imagen;
+            } catch (e) { return null; }
+        }
+
+        function pintarFotoFormulario(dataUri) {
+            fotoTrabajadorDataUri = dataUri || null;
+            const mini = document.getElementById('foto-miniatura');
+            if (!mini) return;
+            mini.classList.toggle('con-foto', !!fotoTrabajadorDataUri);
+            mini.innerHTML = fotoTrabajadorDataUri
+                ? '<img src="' + fotoTrabajadorDataUri + '" alt="Fotografía del trabajador">'
+                : 'Sin foto';
+        }
+
+        function ponerEstadoFoto(texto, tipo) {
+            const el = document.getElementById('foto-estado');
+            if (!el) return;
+            el.textContent = texto || '';
+            el.className = 'foto-estado' + (tipo ? ' ' + tipo : '');
+        }
+
+        async function cargarFotoEnFormulario(cedula) {
+            pintarFotoFormulario(null);
+            ponerEstadoFoto('');
+            const clave = fotoCedula(cedula);
+            if (!clave) return;
+            const imagen = await obtenerFotoTrabajador(clave);
+            // Solo se pinta si el formulario sigue en la misma cédula
+            if (imagen && fotoCedula(document.getElementById('cedula-ficha')?.value) === clave) {
+                pintarFotoFormulario(imagen);
+            }
+        }
+
+        async function alElegirFoto(evento) {
+            const archivo = evento.target.files && evento.target.files[0];
+            evento.target.value = '';
+            if (!archivo) return;
+            const cedula = fotoCedula(document.getElementById('cedula-ficha')?.value);
+            if (!cedula) { ponerEstadoFoto('Todavía no aparece tu cédula.', 'error'); return; }
+            ponerEstadoFoto('Preparando la foto…');
+            try {
+                const dataUri = await comprimirImagen(archivo);
+                pintarFotoFormulario(dataUri);
+                ponerEstadoFoto('Guardando la foto…');
+                const res = await subirFotoTrabajador(cedula, dataUri);
+                if (res.ok) ponerEstadoFoto('Foto guardada correctamente.', 'ok');
+                else ponerEstadoFoto('No se pudo guardar: ' + (res.error || 'error desconocido'), 'error');
+            } catch (e) {
+                ponerEstadoFoto('No se pudo procesar la imagen. Prueba con otra.', 'error');
+            }
+        }
+
+        function quitarFotoFormulario() {
+            pintarFotoFormulario(null);
+            ponerEstadoFoto('Vista previa quitada. La foto guardada sigue en el almacén.', '');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const boton = document.getElementById('btn-foto-elegir');
+            const entrada = document.getElementById('foto-input');
+            const quitar = document.getElementById('btn-foto-quitar');
+            if (boton && entrada) boton.addEventListener('click', function () { entrada.click(); });
+            if (entrada) entrada.addEventListener('change', alElegirFoto);
+            if (quitar) quitar.addEventListener('click', quitarFotoFormulario);
+        });
+
         function verPlanillaAdmin(cedula) {
             fichaActualCedula = cedula;
             const f = getFichas().find(x => (x.cedula_ficha||'').toString() === cedula.toString());
@@ -6224,23 +6451,32 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             let html = `
                 <div class="planilla-section">
                     <h3>Datos Personales</h3>
-                    <div class="planilla-grid">
-                        ${dato('Nombres y Apellidos', escaparHtml(f.nombres), 6)}
-                        ${dato('Cédula de Identidad', escaparHtml(f.cedula_ficha), 2)}
-                        ${dato('Estado Civil', escaparHtml((f.estado_civil||'').charAt(0).toUpperCase()+(f.estado_civil||'').slice(1)), 2)}
-                        ${dato('Sexo', escaparHtml(f.sexo? f.sexo.charAt(0).toUpperCase()+f.sexo.slice(1):''), 2)}
-                        ${dato('Fecha de Nacimiento', escaparHtml(f.fecha_nacimiento), 2)}
-                        ${dato('Edad', escaparHtml(f.edad), 1)}
-                        ${dato('Nivel de Estudio', escaparHtml(nombreEstudio(f.nivel_estudio)), 3)}
-                        ${dato('Teléfonos', escaparHtml((f.telefonos||[]).join(' · ')), 6)}
-                        ${dato('Lugar de Nacimiento', escaparHtml(f.lugar_nacimiento), 3)}
-                        ${dato('Correo Electrónico', escaparHtml(f.correo), 3)}
-                        ${dato('Tipo de Nómina', escaparHtml(tipoContratacionTexto(f)), 2)}
-                        ${dato('Área de Trabajo', escaparHtml(areaTrabajoTexto(f)), 4)}
-                        ${dato('Municipio', escaparHtml(f.municipio==='otro'? nombreLugar(f.municipio_otro) : nombreLugar(f.municipio)), 2)}
-                        ${dato('Parroquia', escaparHtml(nombreLugar(f.parroquia_otro||f.parroquia)), 2)}
-                        ${dato('Comuna', escaparHtml(nombreLugar(f.comuna_otro||f.comuna)), 2)}
-                        ${dato('Dirección detallada', escaparHtml(f.direccion), 6)}
+                    <div class="planilla-grid planilla-grid--foto">
+                        <div class="planilla-foto-rotulo" style="grid-row:1;"><span class="planilla-label">Fotografía</span></div>
+                        <div class="planilla-foto" style="grid-row:2 / span 4;"><div class="foto-marco" id="planilla-foto-marco">3 × 4 cm</div></div>
+
+                        <div class="planilla-item planilla-item--base" style="grid-row:1; grid-column:2 / span 5;"><span class="planilla-label">Nombres y Apellidos</span><span class="planilla-value">${escaparHtml(f.nombres)}</span></div>
+
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:2; grid-column:2 / span 2;"><span class="planilla-label">Cédula de Identidad</span><span class="planilla-value">${escaparHtml(f.cedula_ficha)}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:2; grid-column:4 / span 2;"><span class="planilla-label">Estado Civil</span><span class="planilla-value">${escaparHtml((f.estado_civil||'').charAt(0).toUpperCase()+(f.estado_civil||'').slice(1))}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:2; grid-column:6;"><span class="planilla-label">Sexo</span><span class="planilla-value">${escaparHtml(f.sexo? f.sexo.charAt(0).toUpperCase()+f.sexo.slice(1):'')}</span></div>
+
+                        <div class="planilla-item" style="grid-row:3; grid-column:2 / span 2;"><span class="planilla-label">Fecha de Nacimiento</span><span class="planilla-value">${escaparHtml(f.fecha_nacimiento)}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:3; grid-column:4;"><span class="planilla-label">Edad</span><span class="planilla-value">${escaparHtml(f.edad)}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:3; grid-column:5 / span 2;"><span class="planilla-label">Nivel de Estudio</span><span class="planilla-value">${escaparHtml(nombreEstudio(f.nivel_estudio))}</span></div>
+
+                        <div class="planilla-item" style="grid-row:4; grid-column:2 / span 2;"><span class="planilla-label">Teléfonos</span><span class="planilla-value">${escaparHtml((f.telefonos||[]).join(' · '))}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:4; grid-column:4 / span 3;"><span class="planilla-label">Correo Electrónico</span><span class="planilla-value">${escaparHtml(f.correo)}</span></div>
+
+                        <div class="planilla-item" style="grid-row:5; grid-column:2 / span 2;"><span class="planilla-label">Lugar de Nacimiento</span><span class="planilla-value">${escaparHtml(f.lugar_nacimiento)}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:5; grid-column:4 / span 3;"><span class="planilla-label">Tipo de Nómina</span><span class="planilla-value">${escaparHtml(tipoContratacionTexto(f))}</span></div>
+
+                        <div class="planilla-item" style="grid-row:6; grid-column:1 / span 2;"><span class="planilla-label">Área de Trabajo</span><span class="planilla-value">${escaparHtml(areaTrabajoTexto(f))}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:6; grid-column:3 / span 2;"><span class="planilla-label">Municipio</span><span class="planilla-value">${escaparHtml(f.municipio==='otro'? nombreLugar(f.municipio_otro) : nombreLugar(f.municipio))}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:6; grid-column:5 / span 2;"><span class="planilla-label">Parroquia</span><span class="planilla-value">${escaparHtml(nombreLugar(f.parroquia_otro||f.parroquia))}</span></div>
+
+                        <div class="planilla-item" style="grid-row:7; grid-column:1 / span 2;"><span class="planilla-label">Comuna</span><span class="planilla-value">${escaparHtml(nombreLugar(f.comuna_otro||f.comuna))}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:7; grid-column:3 / span 4;"><span class="planilla-label">Dirección detallada</span><span class="planilla-value">${escaparHtml(f.direccion)}</span></div>
                     </div>
                 </div>
                 <div class="planilla-section">
@@ -6282,6 +6518,17 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 html += `</tbody></table></div>`;
             });
             document.getElementById('planilla-contenido').innerHTML = html;
+
+            // Fotografía: se pide al puente y se dibuja dentro de la celda
+            const marcoFoto = document.getElementById('planilla-foto-marco');
+            if (marcoFoto) {
+                obtenerFotoTrabajador(f.cedula_ficha || cedula).then(function (imagen) {
+                    if (imagen && marcoFoto.isConnected) {
+                        marcoFoto.classList.add('con-foto');
+                        marcoFoto.innerHTML = '<img src="' + imagen + '" alt="Fotografía">';
+                    }
+                });
+            }
         }
 
         // ============================================================
@@ -6374,7 +6621,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                         if (hc) {
                             hc.style.setProperty('width', '100%', 'important');
                             hc.style.setProperty('margin', '0', 'important');
-                            hc.style.setProperty('padding', '0', 'important');
+                            hc.style.setProperty('padding', '0 0 12mm 0', 'important');
                         }
                     }
                 });
@@ -7024,5 +7271,5 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4fd97a47e597456',t:'MTc5Mjg5MzI1Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4fe98f58fe3b887',t:'MTc5MjkwMzc5Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
