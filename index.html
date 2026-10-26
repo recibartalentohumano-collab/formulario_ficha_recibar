@@ -2807,10 +2807,22 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                                 <option value="universitario">Universitario</option>
                             </select>
                         </div>
-                        <div class="form-group" id="grupo-estudio-detalle" style="display:none;">
-                            <label for="estudio_detalle" id="label-estudio-detalle">Detalle de estudio</label>
-                            <input type="text" id="estudio_detalle" name="estudio_detalle" autocomplete="off" placeholder="">
-                            <p class="hint" id="hint-estudio-detalle"></p>
+                        <div class="form-group" id="grupo-estudia" style="display:none;">
+                            <label for="estudia_actualmente">¿Estudia? *</label>
+                            <select id="estudia_actualmente" name="estudia_actualmente">
+                                <option value="">Seleccione...</option>
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="grupo-que-estudia" style="display:none;">
+                            <label for="que_estudia">¿Qué estudia? *</label>
+                            <input type="text" id="que_estudia" name="que_estudia" autocomplete="off" placeholder="Grado, año, carrera o nivel que cursa">
+                        </div>
+                        <div class="form-group" id="grupo-carrera-tecnico" style="display:none;">
+                            <label for="carrera_tecnico" id="label-carrera-tecnico">Título universitario / Técnico *</label>
+                            <input type="text" id="carrera_tecnico" name="carrera_tecnico" autocomplete="off" placeholder="">
+                            <p class="hint" id="hint-carrera-tecnico"></p>
                         </div>
                         <div class="form-group">
                             <label for="correo">Correo Electrónico</label>
@@ -3223,6 +3235,13 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                         <div class="card-graf"><h4>Estado Civil</h4><canvas id="chart-estado-civil"></canvas></div>
                         <div class="card-graf"><h4>Tipo de Nómina</h4><canvas id="chart-contratacion"></canvas></div>
                         <div class="card-graf"><h4>Área de Trabajo</h4><canvas id="chart-area"></canvas></div>
+                        <div class="card-graf card-graf--ancho" style="grid-column:1 / -1;">
+                            <h4>Trabajadores por Comuna (Municipio Simón Bolívar — 42 comunas)</h4>
+                            <p style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-muted);">Solo se cuentan fichas del municipio Simón Bolívar. Ordenado de mayor a menor.</p>
+                            <div style="position:relative;width:100%;min-height:420px;max-height:640px;">
+                                <canvas id="chart-comunas"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -3810,9 +3829,26 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
         // Nadie puede descargar la lista completa desde la página.
         let datosTrabajadorSesion = null;
 
+        // Cédulas autorizadas extra (además de la lista en Supabase)
+        const CEDULAS_EXTRA_AUTORIZADAS = {
+            '19013162': { nombre: '', tipo_nomina: 'fijo' }
+        };
+
         async function consultarCedulaAutorizada(cedula) {
             const limpia = (cedula || '').toString().replace(/\D/g, '');
             if (!limpia) return { ok: false, motivo: 'vacia' };
+
+            // Acceso local adicional (mismas reglas de sesión que el padrón)
+            const extra = CEDULAS_EXTRA_AUTORIZADAS[limpia];
+            if (extra) {
+                return {
+                    ok: true,
+                    cedula: limpia,
+                    nombre: (extra.nombre || '').toString().trim(),
+                    tipo: (extra.tipo_nomina || 'fijo').toString().trim().toLowerCase()
+                };
+            }
+
             try {
                 const cliente = getSupabase();
                 if (!cliente) return { ok: false, motivo: 'sin_conexion' };
@@ -4330,39 +4366,61 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
         
         function actualizarCampoEstudioDetalle() {
             const nivel = (document.getElementById('nivel_estudio')?.value || '').toString();
-            const grupo = document.getElementById('grupo-estudio-detalle');
-            const input = document.getElementById('estudio_detalle');
-            const label = document.getElementById('label-estudio-detalle');
-            const hint = document.getElementById('hint-estudio-detalle');
-            if (!grupo || !input || !label) return;
+            const grupoEstudia = document.getElementById('grupo-estudia');
+            const grupoQue = document.getElementById('grupo-que-estudia');
+            const grupoCarrera = document.getElementById('grupo-carrera-tecnico');
+            const selEstudia = document.getElementById('estudia_actualmente');
+            const inpQue = document.getElementById('que_estudia');
+            const inpCarrera = document.getElementById('carrera_tecnico');
+            const labelCarrera = document.getElementById('label-carrera-tecnico');
+            const hintCarrera = document.getElementById('hint-carrera-tecnico');
 
-            if (nivel === 'tsu') {
-                grupo.style.display = '';
-                label.textContent = 'Técnico / especialidad *';
-                input.placeholder = 'Nombre del técnico o especialidad';
-                if (hint) hint.textContent = 'Indica el técnico superior o la especialidad que cursa o cursó.';
-                input.required = true;
-            } else if (nivel === 'universitario') {
-                grupo.style.display = '';
-                label.textContent = 'Carrera *';
-                input.placeholder = 'Nombre de la carrera';
-                if (hint) hint.textContent = 'Indica la carrera universitaria que cursa o cursó.';
-                input.required = true;
-            } else if (nivel === 'primaria' || nivel === 'secundaria' || nivel === 'bachiller') {
-                grupo.style.display = '';
-                label.textContent = '¿Qué estudia?';
-                input.placeholder = 'Grado, año o mención (si aplica)';
-                if (hint) hint.textContent = 'Si estudia, escribe qué estudia (grado, año o mención).';
-                input.required = false;
-            } else {
-                // analfabetismo o vacío
-                grupo.style.display = 'none';
-                input.required = false;
-                input.value = '';
-                if (hint) hint.textContent = '';
+            const tieneNivel = nivel && nivel !== 'analfabetismo';
+            const esTsu = nivel === 'tsu';
+            const esUni = nivel === 'universitario';
+            const estudiaSi = (selEstudia?.value || '') === 'si';
+
+            // ¿Estudia? — para cualquier nivel salvo analfabetismo
+            if (grupoEstudia) {
+                grupoEstudia.style.display = tieneNivel ? '' : 'none';
+                if (selEstudia) {
+                    selEstudia.required = !!tieneNivel;
+                    if (!tieneNivel) selEstudia.value = '';
+                }
+            }
+
+            // Si responde Sí → ¿Qué estudia?
+            if (grupoQue && inpQue) {
+                const mostrarQue = tieneNivel && estudiaSi;
+                grupoQue.style.display = mostrarQue ? '' : 'none';
+                inpQue.required = mostrarQue;
+                if (!mostrarQue) inpQue.value = '';
+            }
+
+            // TSU / Universitario → qué estudió (técnico o carrera)
+            if (grupoCarrera && inpCarrera && labelCarrera) {
+                if (esTsu) {
+                    grupoCarrera.style.display = '';
+                    labelCarrera.textContent = 'Técnico / especialidad *';
+                    inpCarrera.placeholder = 'Nombre del técnico o especialidad';
+                    if (hintCarrera) hintCarrera.textContent = 'Indica el técnico superior o la especialidad que estudió o estudia.';
+                    inpCarrera.required = true;
+                } else if (esUni) {
+                    grupoCarrera.style.display = '';
+                    labelCarrera.textContent = 'Título universitario *';
+                    inpCarrera.placeholder = 'Nombre del título universitario';
+                    if (hintCarrera) hintCarrera.textContent = 'Indica el título universitario que obtuvo o está cursando.';
+                    inpCarrera.required = true;
+                } else {
+                    grupoCarrera.style.display = 'none';
+                    inpCarrera.required = false;
+                    inpCarrera.value = '';
+                    if (hintCarrera) hintCarrera.textContent = '';
+                }
             }
         }
         document.getElementById('nivel_estudio')?.addEventListener('change', actualizarCampoEstudioDetalle);
+        document.getElementById('estudia_actualmente')?.addEventListener('change', actualizarCampoEstudioDetalle);
 
         document.getElementById('es_por_vida').addEventListener('change', function() {
             document.getElementById('tiempo-tratamiento-group').style.display = this.value === 'no' ? 'block' : 'none';
@@ -4576,6 +4634,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 fecha_nacimiento: textoONull(data.fecha_nacimiento),
                 edad: enteroONull(data.edad),
                 nivel_estudio: textoONull(data.nivel_estudio),
+                estudia_actualmente: textoONull(data.estudia_actualmente),
+                que_estudia: textoONull(data.que_estudia),
+                carrera_tecnico: textoONull(data.carrera_tecnico),
                 correo: textoONull(data.correo),
                 tipo_contratacion: textoONull(data.tipo_contratacion),
                 area_trabajo: textoONull(data.area_trabajo),
@@ -4616,6 +4677,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 fecha_nacimiento: row.fecha_nacimiento ?? base.fecha_nacimiento ?? '',
                 edad: row.edad ?? base.edad ?? '',
                 nivel_estudio: row.nivel_estudio ?? base.nivel_estudio ?? '',
+                estudia_actualmente: row.estudia_actualmente ?? base.estudia_actualmente ?? '',
+                que_estudia: row.que_estudia ?? base.que_estudia ?? '',
+                carrera_tecnico: row.carrera_tecnico ?? base.carrera_tecnico ?? base.estudio_detalle ?? '',
                 estudio_detalle: row.estudio_detalle ?? base.estudio_detalle ?? '',
                 correo: row.correo ?? base.correo ?? '',
                 tipo_contratacion: row.tipo_contratacion ?? base.tipo_contratacion ?? '',
@@ -5524,6 +5588,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 { campo: 'fecha_nacimiento', etiqueta: 'F. Nacimiento', tipo: 'fecha' },
                 { campo: 'edad', etiqueta: 'Edad', tipo: 'numero' },
                 { campo: 'nivel_estudio', etiqueta: 'Nivel Estudio', tipo: 'select', opciones: 'nivel_estudio' },
+                { campo: 'estudia_actualmente', etiqueta: '¿Estudia?', tipo: 'select', opciones: 'si_no' },
+                { campo: 'que_estudia', etiqueta: 'Qué estudia', tipo: 'texto' },
+                { campo: 'carrera_tecnico', etiqueta: 'Título univ. / Técnico', tipo: 'texto' },
                 { campo: 'correo', etiqueta: 'Correo', tipo: 'texto' },
                 { campo: 'municipio', etiqueta: 'Municipio', tipo: 'select', opciones: 'municipio', extra: 'municipio_otro', etiquetaExtra: '¿Cuál?' },
                 { campo: 'condicion_salud', etiqueta: 'Condición/Disc.', tipo: 'select', opciones: 'condicion_salud', extra: 'condicion_cual', etiquetaExtra: 'Cuál' }
@@ -5704,7 +5771,13 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 case 'edad':
                     return escaparHtml((f.edad === '' || f.edad === null || f.edad === undefined) ? '—' : f.edad);
                 case 'nivel_estudio':
-                    return escaparHtml(capitalizarExcel(f.nivel_estudio) || '—');
+                    return escaparHtml(nombreEstudio(f.nivel_estudio) || capitalizarExcel(f.nivel_estudio) || '—');
+                case 'estudia_actualmente':
+                    return siNoExcel(f.estudia_actualmente) || '—';
+                case 'que_estudia':
+                    return escaparHtml(f.que_estudia || '—');
+                case 'carrera_tecnico':
+                    return escaparHtml(f.carrera_tecnico || '—');
                 case 'correo':
                     return `<span style="font-size: var(--fs-xs);">${escaparHtml(f.correo || '—')}</span>`;
                 case 'municipio':
@@ -6060,6 +6133,25 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 .join(' ');
         }
         // Nivel de estudio con sus siglas correctas
+                function textoEstudioCompleto(f) {
+            if (!f) return '';
+            const partes = [];
+            const nivel = nombreEstudio(f.nivel_estudio) || '';
+            if (nivel) partes.push(nivel);
+            if (f.carrera_tecnico) {
+                const etiq = (f.nivel_estudio === 'tsu') ? 'Técnico' : (f.nivel_estudio === 'universitario' ? 'Título universitario' : 'Título / Técnico');
+                partes.push(etiq + ': ' + f.carrera_tecnico);
+            }
+            if (f.estudia_actualmente === 'si') {
+                partes.push('Estudia: Sí' + (f.que_estudia ? (' — ' + f.que_estudia) : ''));
+            } else if (f.estudia_actualmente === 'no') {
+                partes.push('Estudia: No');
+            } else if (f.que_estudia) {
+                partes.push('Estudia: ' + f.que_estudia);
+            }
+            return partes.join(' · ');
+        }
+
         function nombreEstudio(valor) {
             const t = String(valor || '').toLowerCase();
             const mapa = { primaria: 'Primaria', secundaria: 'Secundaria', bachiller: 'Bachiller', tsu: 'TSU', universitario: 'Universitario', postgrado: 'Postgrado', otro: 'Otro' };
@@ -6104,6 +6196,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 { t: 'Fecha de Nacimiento', w: 15, g: 'datos', v: f => textoExcel(f.fecha_nacimiento) },
                 { t: 'Edad', w: 7, g: 'datos', v: f => numeroExcel(f.edad) },
                 { t: 'Nivel de Estudio', w: 15, g: 'datos', v: f => NIVEL_ESTUDIO_EXCEL[f.nivel_estudio] || textoExcel(f.nivel_estudio) },
+                { t: '¿Estudia?', w: 10, g: 'datos', v: f => siNoExcel(f.estudia_actualmente) },
+                { t: 'Qué estudia', w: 22, g: 'datos', v: f => textoExcel(f.que_estudia) },
+                { t: 'Título universitario / Técnico', w: 28, g: 'datos', v: f => textoExcel(f.carrera_tecnico) },
                 { t: 'Correo Electrónico', w: 24, g: 'datos', v: f => textoExcel(f.correo) },
                 { t: 'Tipo de Nómina', w: 16, g: 'datos', v: f => tipoContratacionTexto(f) },
                 { t: 'Área de Trabajo', w: 22, g: 'datos', v: f => areaTrabajoTexto(f) },
@@ -7049,7 +7144,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             val('sexo', f.sexo);
             val('lugar_nacimiento', f.lugar_nacimiento);
             val('nivel_estudio', f.nivel_estudio);
-            val('estudio_detalle', f.estudio_detalle || '');
+            val('estudia_actualmente', f.estudia_actualmente || '');
+            val('que_estudia', f.que_estudia || '');
+            val('carrera_tecnico', f.carrera_tecnico || f.estudio_detalle || '');
             try { actualizarCampoEstudioDetalle(); } catch (e) {}
             val('correo', f.correo);
             val('tipo_contratacion', f.tipo_contratacion);
@@ -7532,7 +7629,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
                         <div class="planilla-item" style="grid-row:3; grid-column:2 / span 2;"><span class="planilla-label">Fecha de Nacimiento</span><span class="planilla-value">${escaparHtml(f.fecha_nacimiento)}</span></div>
                         <div class="planilla-item planilla-item--sin-arriba" style="grid-row:3; grid-column:4;"><span class="planilla-label">Edad</span><span class="planilla-value">${escaparHtml(f.edad)}</span></div>
-                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:3; grid-column:5 / span 2;"><span class="planilla-label">Nivel de Estudio</span><span class="planilla-value">${escaparHtml(nombreEstudio(f.nivel_estudio))}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:3; grid-column:5 / span 2;"><span class="planilla-label">Nivel de Estudio</span><span class="planilla-value">${escaparHtml(textoEstudioCompleto(f) || nombreEstudio(f.nivel_estudio))}</span></div>
 
                         <div class="planilla-item" style="grid-row:4; grid-column:2 / span 2;"><span class="planilla-label">Teléfonos</span><span class="planilla-value">${escaparHtml((f.telefonos||[]).join(' · '))}</span></div>
                         <div class="planilla-item planilla-item--sin-arriba" style="grid-row:4; grid-column:4 / span 3;"><span class="planilla-label">Correo Electrónico</span><span class="planilla-value">${escaparHtml(f.correo)}</span></div>
@@ -7976,13 +8073,36 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             const ctx = document.getElementById(id);
             if (!ctx) return;
             if (charts[id]) charts[id].destroy();
+            const esBarrasHoriz = config.type === 'bar' && config.options && config.options.indexAxis === 'y';
+            const defaults = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 11, family: 'Inter' }, padding: 12 } }
+                },
+                scales: (config.type === 'bar' && !esBarrasHoriz) ? {
+                    y: { beginAtZero: true, ticks: { precision: 0, font: { size: 10 } }, grid: { color: 'rgba(15,107,67,0.07)' } },
+                    x: { ticks: { font: { size: 10 } }, grid: { display: false } }
+                } : {}
+            };
+            const userOpts = config.options || {};
             charts[id] = new Chart(ctx, {
                 ...config,
                 options: {
-                    responsive:true,
-                    maintainAspectRatio:false,
-                    plugins:{ legend:{position:'bottom', labels:{font:{size:11, family:'Inter'}, padding:12} } },
-                    scales: config.type==='bar'? { y:{beginAtZero:true,ticks:{precision:0,font:{size:10}}, grid:{color:'rgba(15,107,67,0.07)'}}, x:{ticks:{font:{size:10}}, grid:{display:false}} } : {}
+                    ...defaults,
+                    ...userOpts,
+                    plugins: {
+                        ...defaults.plugins,
+                        ...(userOpts.plugins || {}),
+                        legend: {
+                            ...(defaults.plugins.legend || {}),
+                            ...((userOpts.plugins && userOpts.plugins.legend) || {})
+                        }
+                    },
+                    scales: {
+                        ...defaults.scales,
+                        ...(userOpts.scales || {})
+                    }
                 }
             });
         }
@@ -8241,9 +8361,86 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             const tc = countBy(fichas, f => tipoContratacionTexto(f));
             makeChart('chart-contratacion',{type:'doughnut',data:{labels:labels(tc),datasets:[{data:data(tc),backgroundColor:colors(tc),borderWidth:2,borderColor:'#fff'}]}});
 
-            // Área de trabajo
+                        // Área de trabajo
             const at = countBy(fichas, f => areaTrabajoTexto(f));
             makeChart('chart-area',{type:'bar',data:{labels:labels(at),datasets:[{label:'Trabajadores',data:data(at),backgroundColor:'#128251',borderRadius:8}]}});
+
+            // Comunas del municipio Simón Bolívar (42)
+            if (document.getElementById('chart-comunas')) {
+                const conteoComunas = {};
+                comunasSimonBolivar.forEach(c => { conteoComunas[c] = 0; });
+                let fueraLista = 0;
+                let otrasMunicipio = 0;
+                fichas.forEach(f => {
+                    const mun = (f.municipio || '').toString().toLowerCase();
+                    if (mun === 'otro') { otrasMunicipio++; return; }
+                    if (mun && mun !== 'simon_bolivar') { otrasMunicipio++; return; }
+                    // simon_bolivar o vacío con comuna del listado
+                    const cruda = (f.comuna || f.comuna_otro || '').toString().trim();
+                    if (!cruda) {
+                        conteoComunas['Sin comuna registrada'] = (conteoComunas['Sin comuna registrada'] || 0) + 1;
+                        return;
+                    }
+                    const match = comunasSimonBolivar.find(c => c.toLowerCase() === cruda.toLowerCase());
+                    if (match) conteoComunas[match] = (conteoComunas[match] || 0) + 1;
+                    else {
+                        // nombre libre que no está en las 42
+                        conteoComunas[cruda] = (conteoComunas[cruda] || 0) + 1;
+                        fueraLista++;
+                    }
+                });
+                // Orden: mayor a menor; las 42 primero, luego extras
+                const ordenadas = Object.entries(conteoComunas)
+                    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'es'));
+                const labCom = ordenadas.map(([k]) => k);
+                const datCom = ordenadas.map(([, v]) => v);
+                const maxCom = Math.max(1, ...datCom);
+                const coloresCom = datCom.map(v => v === maxCom && v > 0 ? '#b8902f' : '#0f6b43');
+                makeChart('chart-comunas', {
+                    type: 'bar',
+                    data: {
+                        labels: labCom,
+                        datasets: [{
+                            label: 'Trabajadores',
+                            data: datCom,
+                            backgroundColor: coloresCom,
+                            borderRadius: 4,
+                            barThickness: 14
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => ` ${ctx.parsed.x} trabajador(es)`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: { precision: 0, stepSize: 1 },
+                                grid: { color: 'rgba(15,107,67,0.08)' }
+                            },
+                            y: {
+                                ticks: {
+                                    font: { size: 9 },
+                                    autoSkip: false,
+                                    callback: function(val) {
+                                        const t = this.getLabelForValue(val) || '';
+                                        return t.length > 42 ? t.slice(0, 40) + '…' : t;
+                                    }
+                                },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
 
             // Progenitores: ¿están bajo su cargo?
             const cargoProg = { 'Sí': 0, 'No': 0, 'Sin registro': 0 };
@@ -8559,35 +8756,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             return true;
         }
 
-        // ---------- Aviso de que se recuperó lo escrito ----------
+        // ---------- Aviso de borrador (desactivado: se recupera en silencio) ----------
         function mostrarAvisoBorrador() {
-            if (document.getElementById('aviso-borrador')) return;
-            const barra = document.createElement('div');
-            barra.id = 'aviso-borrador';
-            barra.setAttribute('role', 'status');
-            barra.style.cssText = [
-                'position:fixed', 'left:0', 'right:0', 'top:0', 'z-index:99999',
-                'display:flex', 'align-items:center', 'justify-content:center', 'gap:14px',
-                'flex-wrap:wrap', 'padding:10px 16px',
-                'background:#ecfdf3', 'border-bottom:1px solid #bbf7d0',
-                'box-shadow:0 2px 10px rgba(7,57,34,0.12)',
-                'font-family:inherit', 'font-size:13.5px', 'color:#073922', 'font-weight:600',
-                'letter-spacing:0.005em'
-            ].join(';');
-            barra.innerHTML =
-                '<span style="display:inline-flex;align-items:center;gap:8px;">' +
-                    '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0f6b43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-                        '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v4l3 2"/>' +
-                    '</svg>' +
-                    'Recuperamos lo que estabas escribiendo. Revísalo y pulsa <strong>&nbsp;Guardar Ficha</strong>' +
-                '</span>' +
-                '<button type="button" id="aviso-borrador-descartar" style="cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;color:#7a2e2e;background:#fff;border:1px solid #e7c4c4;border-radius:8px;padding:5px 11px;">Descartar lo escrito</button>' +
-                '<button type="button" id="aviso-borrador-ocultar" title="Ocultar el aviso" style="cursor:pointer;font:inherit;font-size:16px;line-height:1;color:#0f6b43;background:transparent;border:0;padding:2px 4px;">&#10005;</button>';
-            document.body.appendChild(barra);
-            const boton = document.getElementById('aviso-borrador-descartar');
-            if (boton) boton.addEventListener('click', descartarBorradorRecuperado);
-            const ocultar = document.getElementById('aviso-borrador-ocultar');
-            if (ocultar) ocultar.addEventListener('click', ocultarAvisoBorrador);
+            // No se muestra el mensaje; la recuperación del borrador sigue activa.
         }
 
         function ocultarAvisoBorrador() {
