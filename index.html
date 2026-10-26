@@ -2647,6 +2647,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                             <label for="cedula">Número de Cédula</label>
                             <input type="text" id="cedula" name="cedula" placeholder="Ej: 12345678" required autocomplete="off" inputmode="numeric">
                             <p class="hint">Ingrese solo números, sin puntos ni guiones</p>
+                            <div id="nombre-auto" style="margin-top:6px; padding:8px 10px; background:rgba(15,107,67,0.08); border:1px solid rgba(15,107,67,0.15); border-radius:8px; color:#0a4e30; font-weight:600; font-size:0.82rem; display:none;">Nombre detectado: <span id="nombre-auto-text"></span></div>
                         </div>
                         <button type="submit" class="btn"><svg class="ico" aria-hidden="true"><use href="#i-personas"/></svg> Ingresar como Trabajador</button>
                     </form>
@@ -3831,7 +3832,61 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
         // Cédulas autorizadas extra (además de la lista en Supabase)
         const CEDULAS_EXTRA_AUTORIZADAS = {
-            '19013162': { nombre: '', tipo_nomina: 'fijo' }
+            '3685732': { nombre: 'MARTEL ARGENIS ACOSTA', tipo_nomina: 'fijo' },
+            '3762288': { nombre: 'NAVARRO LUIS', tipo_nomina: 'fijo' },
+            '3870478': { nombre: 'SOTILLO ENILDE', tipo_nomina: 'fijo' },
+            '4007080': { nombre: 'HERNANDEZ PEREZ JESUS BERNARDINO', tipo_nomina: 'fijo' },
+            '4010660': { nombre: 'PEREIRA ENRIQUE', tipo_nomina: 'fijo' },
+            '4041420': { nombre: 'ARMAS GOMEZ MILDRED NERIS', tipo_nomina: 'fijo' },
+            '4218238': { nombre: 'MALAVE MARIA', tipo_nomina: 'fijo' },
+            '4495355': { nombre: 'VILLASMIL VELIZ JESUS MERCEDES', tipo_nomina: 'fijo' },
+            '4500056': { nombre: 'ROMERO ONEXIMO ANTONIO', tipo_nomina: 'fijo' },
+            '4502197': { nombre: 'BLANCO DE PLACERES MARTHA JOSEFINA', tipo_nomina: 'fijo' },
+            '4879551': { nombre: 'GALLARDO RODRIGUEZ ILDEMARO', tipo_nomina: 'fijo' },
+            '4898246': { nombre: 'GUZMAN GARCIA BEATRIZ ANTONIA', tipo_nomina: 'fijo' },
+            '4913746': { nombre: 'CEDEÑO DE BONILLA RAMONITA AURISTELA', tipo_nomina: 'fijo' },
+            '5134402': { nombre: 'MEJIAS HUMBERTO', tipo_nomina: 'fijo' },
+            '5192183': { nombre: 'CABALLERO CARLOS LUIS', tipo_nomina: 'fijo' },
+            '5195514': { nombre: 'NUÑEZ CARMEN DEL VALLE', tipo_nomina: 'fijo' },
+            '5483355': { nombre: 'SANCHEZ RAMON ANTONIO', tipo_nomina: 'fijo' },
+            '5484598': { nombre: 'CORDOVA MAITA JOSE RAMON', tipo_nomina: 'fijo' },
+            '5485588': { nombre: 'RODRIGUEZ NELLY DEL VALLE', tipo_nomina: 'fijo' },
+            '5487369': { nombre: 'YAGUARAN VELASQUEZ PEDRO CELESTINO', tipo_nomina: 'fijo' },
+            '5490006': { nombre: 'RODRIGUEZ ALEXIS CELESTINO', tipo_nomina: 'fijo' },
+            '5490978': { nombre: 'CAGUANA CRUZ RAMON', tipo_nomina: 'fijo' },
+            '5492777': { nombre: 'MARINA ARAY', tipo_nomina: 'fijo' },
+            '5694283': { nombre: 'GENARO RAFAEL COVA', tipo_nomina: 'fijo' },
+            '5707651': { nombre: 'CARRASQUERO LEZAMA LUIS BELTRAN', tipo_nomina: 'fijo' },
+            '6073165': { nombre: 'ROBLES JESUS RAFAEL', tipo_nomina: 'fijo' },
+            '6102230': { nombre: 'MARTINEZ OMAIRA JOSEFINA', tipo_nomina: 'fijo' },
+            '6383299': { nombre: 'HURTADO MORALES ALFREDO RAMON', tipo_nomina: 'fijo' },
+            '6699634': { nombre: 'ARRAY VASQUEZ SANTOS RAFAEL', tipo_nomina: 'fijo' },
+            '6933993': { nombre: 'ROMAN RAMOS CARMEN JOSEFINA', tipo_nomina: 'fijo' },
+            '7271134': { nombre: 'NAPOLES INFANTE CARLOS EDUARDO', tipo_nomina: 'fijo' },
+            '7841205': { nombre: 'MORILLO ALFREDO ANTONIO', tipo_nomina: 'fijo' },
+            '8201005': { nombre: 'MARIN AGUACHE CRUZ RAMON', tipo_nomina: 'fijo' },
+            '8203314': { nombre: 'ATAGUA ANTOIMA LUIS VICENTE', tipo_nomina: 'fijo' },
+            '8204009': { nombre: 'ALCALA GUARARIMA JOSE ALFREDO', tipo_nomina: 'fijo' },
+            '8205567': { nombre: 'MEJIAS MORALES DILIA MARGARITA', tipo_nomina: 'fijo' },
+            '8207815': { nombre: 'SALCEDO SABALLO CARMEN CECILIA', tipo_nomina: 'fijo' },
+            '8208327': { nombre: 'GARCIA CARLOS LUIS', tipo_nomina: 'fijo' },
+            '8208947': { nombre: 'RIVAS GRANADINO PABLO MANUEL', tipo_nomina: 'fijo' },
+            '8209267': { nombre: 'GUANARE TOMAS ANTONIO', tipo_nomina: 'fijo' },
+            '8209457': { nombre: 'CARIAS MEDINA CARMEN TERESA', tipo_nomina: 'fijo' },
+            '8212992': { nombre: 'BELLO ANTONIO CELESTINO', tipo_nomina: 'fijo' },
+            '8216487': { nombre: 'GUAREPE YDA JOSEFINA', tipo_nomina: 'fijo' },
+            '8218871': { nombre: 'RIVERO JOSE RAFAEL', tipo_nomina: 'fijo' },
+            '8219646': { nombre: 'HERNANDEZ JULIO RAFAEL', tipo_nomina: 'fijo' },
+            '8220415': { nombre: 'BOLIVAR UGAS NORIS JOSEFINA', tipo_nomina: 'fijo' },
+            '8222027': { nombre: 'BETANCOURT VELASQUEZ TOMAS GREGORIO', tipo_nomina: 'fijo' },
+            '8222600': { nombre: 'AGUACHE VARGAS LUBEN JOSE', tipo_nomina: 'fijo' },
+            '8223408': { nombre: 'MEDINA PEREZ MARIA AUXILIADORA', tipo_nomina: 'fijo' },
+            '8223867': { nombre: 'CHIRINOS GAMBOA ALONSO ANTONIO', tipo_nomina: 'fijo' },
+            '8224098': { nombre: 'RODRIGUEZ BRAZON RAFAEL ANTONIO', tipo_nomina: 'fijo' },
+            '8224307': { nombre: 'RICARDI BASTARDO MARIA MILAGROS', tipo_nomina: 'fijo' },
+            '8224671': { nombre: 'CALCURIAN ALEXIS JOSE', tipo_nomina: 'fijo' },
+            '8225098': { nombre: 'CUMANA BARROSO EDGAR CLMENTE', tipo_nomina: 'fijo' },
+            '8225974': { nombre: 'PINO ANA MARIA', tipo_nomina: 'fijo' },
         };
 
         async function consultarCedulaAutorizada(cedula) {
@@ -3912,6 +3967,25 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             // Pequeña pausa para mostrar mensaje y luego abrir el video intro
             setTimeout(() => reproducirIntro({ tipo: 'trabajador', cedula: resultado.cedula }), 400);
         });
+
+        // Auto-detectar nombres de los 55 trabajadores amarillos al escribir cédula
+        (function() {
+            const inputCedula = document.getElementById('cedula');
+            const divAuto = document.getElementById('nombre-auto');
+            const spanAuto = document.getElementById('nombre-auto-text');
+            if (!inputCedula || !divAuto || !spanAuto) return;
+            inputCedula.addEventListener('input', function() {
+                const limpia = (this.value || '').toString().replace(/\D/g, '');
+                const extra = CEDULAS_EXTRA_AUTORIZADAS[limpia];
+                if (extra && extra.nombre) {
+                    spanAuto.textContent = extra.nombre;
+                    divAuto.style.display = 'block';
+                } else {
+                    divAuto.style.display = 'none';
+                    spanAuto.textContent = '';
+                }
+            });
+        })();
 
         // ========== VIDEO INTRO DE 5 SEGUNDOS ==========
         const introScreen = document.getElementById('intro-screen');
@@ -8927,5 +9001,5 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ffdda6aa727456',t:'MTc5MjkxNzA5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ffdda6aa727456',t:'MTc5MjkxNzA5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a50b6f511ec667b7',t:'MTc5MzAzODQwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
