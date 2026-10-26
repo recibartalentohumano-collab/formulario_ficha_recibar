@@ -3236,9 +3236,9 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                         <div class="card-graf"><h4>Tipo de Nómina</h4><canvas id="chart-contratacion"></canvas></div>
                         <div class="card-graf"><h4>Área de Trabajo</h4><canvas id="chart-area"></canvas></div>
                         <div class="card-graf card-graf--ancho" style="grid-column:1 / -1;">
-                            <h4>Trabajadores por Comuna (Municipio Simón Bolívar — 42 comunas)</h4>
-                            <p style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-muted);">Solo se cuentan fichas del municipio Simón Bolívar. Ordenado de mayor a menor.</p>
-                            <div style="position:relative;width:100%;min-height:420px;max-height:640px;">
+                            <h4>Trabajadores por Comuna (Municipio Simón Bolívar)</h4>
+                            <p id="resumen-chart-comunas" style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-muted);">Solo comunas con trabajadores registrados en Simón Bolívar.</p>
+                            <div id="wrap-chart-comunas" style="position:relative;width:100%;height:280px;">
                                 <canvas id="chart-comunas"></canvas>
                             </div>
                         </div>
@@ -8365,74 +8365,86 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             const at = countBy(fichas, f => areaTrabajoTexto(f));
             makeChart('chart-area',{type:'bar',data:{labels:labels(at),datasets:[{label:'Trabajadores',data:data(at),backgroundColor:'#128251',borderRadius:8}]}});
 
-            // Comunas del municipio Simón Bolívar (42)
+            // Comunas del municipio Simón Bolívar (solo las que tienen trabajadores)
             if (document.getElementById('chart-comunas')) {
                 const conteoComunas = {};
-                comunasSimonBolivar.forEach(c => { conteoComunas[c] = 0; });
-                let fueraLista = 0;
-                let otrasMunicipio = 0;
                 fichas.forEach(f => {
                     const mun = (f.municipio || '').toString().toLowerCase();
-                    if (mun === 'otro') { otrasMunicipio++; return; }
-                    if (mun && mun !== 'simon_bolivar') { otrasMunicipio++; return; }
-                    // simon_bolivar o vacío con comuna del listado
+                    if (mun === 'otro') return;
+                    if (mun && mun !== 'simon_bolivar') return;
                     const cruda = (f.comuna || f.comuna_otro || '').toString().trim();
-                    if (!cruda) {
-                        conteoComunas['Sin comuna registrada'] = (conteoComunas['Sin comuna registrada'] || 0) + 1;
-                        return;
-                    }
+                    if (!cruda) return; // sin comuna no entra en la comparación
                     const match = comunasSimonBolivar.find(c => c.toLowerCase() === cruda.toLowerCase());
-                    if (match) conteoComunas[match] = (conteoComunas[match] || 0) + 1;
-                    else {
-                        // nombre libre que no está en las 42
-                        conteoComunas[cruda] = (conteoComunas[cruda] || 0) + 1;
-                        fueraLista++;
-                    }
+                    const clave = match || cruda;
+                    conteoComunas[clave] = (conteoComunas[clave] || 0) + 1;
                 });
-                // Orden: mayor a menor; las 42 primero, luego extras
+                // Solo comunas con al menos 1 trabajador, mayor → menor
                 const ordenadas = Object.entries(conteoComunas)
+                    .filter(([, v]) => v > 0)
                     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'es'));
                 const labCom = ordenadas.map(([k]) => k);
                 const datCom = ordenadas.map(([, v]) => v);
-                const maxCom = Math.max(1, ...datCom);
-                const coloresCom = datCom.map(v => v === maxCom && v > 0 ? '#b8902f' : '#0f6b43');
+                const nCom = labCom.length;
+
+                const resumen = document.getElementById('resumen-chart-comunas');
+                const wrap = document.getElementById('wrap-chart-comunas');
+                if (resumen) {
+                    resumen.textContent = nCom
+                        ? `${nCom} comuna${nCom === 1 ? '' : 's'} con trabajadores en Simón Bolívar · ordenado de mayor a menor.`
+                        : 'Aún no hay trabajadores con comuna de Simón Bolívar registrada.';
+                }
+                // Altura dinámica: más comunas → contenedor más alto, barras más finas
+                if (wrap) {
+                    const alto = nCom === 0 ? 120 : Math.min(720, Math.max(160, nCom * 28 + 48));
+                    wrap.style.height = alto + 'px';
+                }
+
+                const maxCom = Math.max(1, ...datCom, 0);
+                const coloresCom = datCom.map(v => (v === maxCom && v > 0) ? '#b8902f' : '#0f6b43');
+                // Grosor de barra: menos comunas = más gruesa
+                const grosor = nCom <= 4 ? 26 : nCom <= 8 ? 20 : nCom <= 14 ? 14 : nCom <= 22 ? 10 : 7;
+
                 makeChart('chart-comunas', {
                     type: 'bar',
                     data: {
-                        labels: labCom,
+                        labels: labCom.length ? labCom : ['Sin datos'],
                         datasets: [{
                             label: 'Trabajadores',
-                            data: datCom,
-                            backgroundColor: coloresCom,
-                            borderRadius: 4,
-                            barThickness: 14
+                            data: labCom.length ? datCom : [0],
+                            backgroundColor: labCom.length ? coloresCom : ['#c5d4cb'],
+                            borderRadius: 5,
+                            barThickness: grosor,
+                            maxBarThickness: 30,
+                            categoryPercentage: 0.85,
+                            barPercentage: 0.9
                         }]
                     },
                     options: {
                         indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: { padding: { left: 4, right: 12, top: 4, bottom: 4 } },
                         plugins: {
                             legend: { display: false },
                             tooltip: {
                                 callbacks: {
-                                    label: (ctx) => ` ${ctx.parsed.x} trabajador(es)`
+                                    label: (ctx) => ' ' + ctx.parsed.x + ' trabajador(es)'
                                 }
                             }
                         },
                         scales: {
                             x: {
                                 beginAtZero: true,
-                                ticks: { precision: 0, stepSize: 1 },
+                                ticks: { precision: 0, stepSize: 1, font: { size: 11 } },
                                 grid: { color: 'rgba(15,107,67,0.08)' }
                             },
                             y: {
                                 ticks: {
-                                    font: { size: 9 },
+                                    font: { size: nCom > 16 ? 9 : 11 },
                                     autoSkip: false,
                                     callback: function(val) {
                                         const t = this.getLabelForValue(val) || '';
-                                        return t.length > 42 ? t.slice(0, 40) + '…' : t;
+                                        return t.length > 48 ? t.slice(0, 46) + '…' : t;
                                     }
                                 },
                                 grid: { display: false }
@@ -8442,6 +8454,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 });
             }
 
+            
             // Progenitores: ¿están bajo su cargo?
             const cargoProg = { 'Sí': 0, 'No': 0, 'Sin registro': 0 };
             fichas.forEach(f => (f.familiares?.progenitores || []).forEach(pg => {
