@@ -2653,12 +2653,12 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 
                     <form id="form-admin" class="form">
                         <div class="form-group">
-                            <label for="email">Correo electrónico</label>
-                            <input type="email" id="email" name="email" placeholder="(opcional)">
+                            <label for="email">Correo electrónico *</label>
+                            <input type="email" id="email" name="email" placeholder="Correo de administrador" required autocomplete="username">
                         </div>
                         <div class="form-group">
-                            <label for="password">Contraseña</label>
-                            <input type="password" id="password" name="password" placeholder="(opcional)">
+                            <label for="password">Contraseña *</label>
+                            <input type="password" id="password" name="password" placeholder="Contraseña" required autocomplete="current-password">
                         </div>
                         <button type="submit" class="btn"><svg class="ico" aria-hidden="true"><use href="#i-escudo"/></svg> Ingresar como Administrador</button>
                     </form>
@@ -2807,6 +2807,11 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                                 <option value="universitario">Universitario</option>
                             </select>
                         </div>
+                        <div class="form-group" id="grupo-estudio-detalle" style="display:none;">
+                            <label for="estudio_detalle" id="label-estudio-detalle">Detalle de estudio</label>
+                            <input type="text" id="estudio_detalle" name="estudio_detalle" autocomplete="off" placeholder="">
+                            <p class="hint" id="hint-estudio-detalle"></p>
+                        </div>
                         <div class="form-group">
                             <label for="correo">Correo Electrónico</label>
                             <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com">
@@ -2825,8 +2830,8 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                         <div class="form-group">
                             <label for="area_trabajo">Área de Trabajo *</label>
                             <input type="text" id="area_trabajo" name="area_trabajo" required autocomplete="off"
-                                   placeholder="Escribe el área (Ej: Almacén, Producción, Caja...)">
-                            <p class="hint">Escríbela tú mismo, tal como se llama el área en la empresa.</p>
+                                   placeholder="Área de trabajo">
+                            <p class="hint">Escríbela tal como se llama el área en la empresa.</p>
                         </div>
                         <!-- DIRECCIÓN: Municipio / Parroquia / Comuna -->
                         <div class="form-group">
@@ -3931,11 +3936,23 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             })();
         }
 
-        // Login Administrador
+        // Login Administrador (credenciales fijas de Talento Humano)
+        const ADMIN_CORREO = 'recibartalentohumano@gmail.com';
+        const ADMIN_CLAVE = 'tthhrecibar.';
         document.getElementById('form-admin').addEventListener('submit', function(e) {
             e.preventDefault();
             hideMessages();
-            const email = document.getElementById('email').value.trim().toLowerCase() || 'administrador';
+            const email = (document.getElementById('email').value || '').trim().toLowerCase();
+            const clave = (document.getElementById('password').value || '').trim();
+
+            if (!email || !clave) {
+                showError('Ingresa el correo y la contraseña de administrador.');
+                return;
+            }
+            if (email !== ADMIN_CORREO || clave !== ADMIN_CLAVE) {
+                showError('Correo o contraseña incorrectos. Verifica los datos e intenta de nuevo.');
+                return;
+            }
 
             sessionStorage.setItem('rol', 'administrador');
             sessionStorage.setItem('email', email);
@@ -4310,6 +4327,43 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             }
         });
 
+        
+        function actualizarCampoEstudioDetalle() {
+            const nivel = (document.getElementById('nivel_estudio')?.value || '').toString();
+            const grupo = document.getElementById('grupo-estudio-detalle');
+            const input = document.getElementById('estudio_detalle');
+            const label = document.getElementById('label-estudio-detalle');
+            const hint = document.getElementById('hint-estudio-detalle');
+            if (!grupo || !input || !label) return;
+
+            if (nivel === 'tsu') {
+                grupo.style.display = '';
+                label.textContent = 'Técnico / especialidad *';
+                input.placeholder = 'Nombre del técnico o especialidad';
+                if (hint) hint.textContent = 'Indica el técnico superior o la especialidad que cursa o cursó.';
+                input.required = true;
+            } else if (nivel === 'universitario') {
+                grupo.style.display = '';
+                label.textContent = 'Carrera *';
+                input.placeholder = 'Nombre de la carrera';
+                if (hint) hint.textContent = 'Indica la carrera universitaria que cursa o cursó.';
+                input.required = true;
+            } else if (nivel === 'primaria' || nivel === 'secundaria' || nivel === 'bachiller') {
+                grupo.style.display = '';
+                label.textContent = '¿Qué estudia?';
+                input.placeholder = 'Grado, año o mención (si aplica)';
+                if (hint) hint.textContent = 'Si estudia, escribe qué estudia (grado, año o mención).';
+                input.required = false;
+            } else {
+                // analfabetismo o vacío
+                grupo.style.display = 'none';
+                input.required = false;
+                input.value = '';
+                if (hint) hint.textContent = '';
+            }
+        }
+        document.getElementById('nivel_estudio')?.addEventListener('change', actualizarCampoEstudioDetalle);
+
         document.getElementById('es_por_vida').addEventListener('change', function() {
             document.getElementById('tiempo-tratamiento-group').style.display = this.value === 'no' ? 'block' : 'none';
             if (this.value !== 'no') document.getElementById('tiempo_tratamiento').value = '';
@@ -4333,8 +4387,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             if (esHijos) {
                 extraCampo = `
                     <div class="form-group">
-                        <label>Año que estudia</label>
-                        <input type="text" name="${tipo}_ano_${contadores[tipo]}" placeholder="Ej: 3er año">
+                        <label>¿Qué estudia?</label>
+                        <input type="text" name="${tipo}_ano_${contadores[tipo]}" placeholder="Grado, año o nivel que cursa">
                     </div>
                 `;
             }
@@ -4562,6 +4616,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 fecha_nacimiento: row.fecha_nacimiento ?? base.fecha_nacimiento ?? '',
                 edad: row.edad ?? base.edad ?? '',
                 nivel_estudio: row.nivel_estudio ?? base.nivel_estudio ?? '',
+                estudio_detalle: row.estudio_detalle ?? base.estudio_detalle ?? '',
                 correo: row.correo ?? base.correo ?? '',
                 tipo_contratacion: row.tipo_contratacion ?? base.tipo_contratacion ?? '',
                 area_trabajo: row.area_trabajo ?? base.area_trabajo ?? '',
@@ -6994,6 +7049,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             val('sexo', f.sexo);
             val('lugar_nacimiento', f.lugar_nacimiento);
             val('nivel_estudio', f.nivel_estudio);
+            val('estudio_detalle', f.estudio_detalle || '');
+            try { actualizarCampoEstudioDetalle(); } catch (e) {}
             val('correo', f.correo);
             val('tipo_contratacion', f.tipo_contratacion);
             val('area_trabajo', f.area_trabajo === 'otro' ? (f.area_trabajo_otro || '') : (f.area_trabajo || ''));
