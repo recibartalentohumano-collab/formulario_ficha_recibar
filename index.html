@@ -618,17 +618,26 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         .section-title span {
             background: var(--green-gradient);
             color: #fff;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 10px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: var(--fs-sm);
+            font-size: 17px;
             font-weight: 700;
+            line-height: 1;
             flex-shrink: 0;
             box-shadow: 0 4px 10px rgba(15,107,67,0.25);
             position: relative;
+        }
+        /* El icono del título se dibuja en blanco, con el mismo trazo de línea de todo el sistema */
+        .section-title span .ico {
+            width: 17px;
+            height: 17px;
+            stroke-width: 1.9;
+            color: #fff;
+            vertical-align: 0;
         }
         .section-title span::after {
             content: '';
@@ -649,6 +658,53 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         }
 
         .form-group.full { grid-column: 1 / -1; }
+
+        /* ===== Bloque aparte: Lugar de Habitación ===== */
+        .bloque-habita {
+            grid-column: 1 / -1;
+            margin-top: 6px;
+            padding: 18px;
+            border-radius: 14px;
+            border: 1.5px solid var(--primary-soft, #bfe3cf);
+            background: linear-gradient(180deg, #f7fcf9, #eef7f1);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+        .bloque-habita-cabecera {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--primary-soft, #bfe3cf);
+        }
+        .bloque-habita-icono {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--green-gradient, linear-gradient(135deg, #0f6b43, #0a7b3e));
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(15,107,67,0.22);
+        }
+        .bloque-habita-titulo {
+            font-size: var(--fs-base);
+            font-weight: 800;
+            color: var(--primary-darker);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+        .bloque-habita-sub {
+            font-size: var(--fs-xs);
+            color: var(--text-muted, #6b7c74);
+            margin-top: 2px;
+            line-height: 1.35;
+        }
+        @media (max-width: 640px) {
+            .bloque-habita { padding: 14px; }
+        }
 
         .conditional {
             display: none;
@@ -2583,6 +2639,10 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     <!-- ===== Biblioteca de iconos (SVG) ===== -->
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true" focusable="false">
         <symbol id="i-tabla" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M9 9.5V20"/></symbol>
+        <symbol id="i-persona" viewBox="0 0 24 24"><circle cx="12" cy="7.9" r="3.1"/><path d="M5.4 20c0-3.4 2.9-5.5 6.6-5.5s6.6 2.1 6.6 5.5"/></symbol>
+        <symbol id="i-pareja" viewBox="0 0 24 24"><circle cx="9.1" cy="12" r="5.1"/><circle cx="14.9" cy="12" r="5.1"/></symbol>
+        <symbol id="i-hijos" viewBox="0 0 24 24"><circle cx="8.7" cy="9.2" r="2.7"/><path d="M3.5 20c0-2.9 2.3-4.7 5.2-4.7s5.2 1.8 5.2 4.7"/><circle cx="17.2" cy="10.8" r="2.1"/><path d="M13.6 20c0-2.2 1.7-3.6 3.6-3.6s3.6 1.4 3.6 3.6"/></symbol>
+        <symbol id="i-casa" viewBox="0 0 24 24"><path d="M3.5 10.4 12 3.5l8.5 6.9"/><path d="M5.6 9.4V19a1.4 1.4 0 0 0 1.4 1.4h10a1.4 1.4 0 0 0 1.4-1.4V9.4"/><path d="M9.8 20.4v-5.2h4.4v5.2"/></symbol>
         <symbol id="i-personas" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.2 20c0-3.2 2.6-5.2 5.8-5.2s5.8 2 5.8 5.2"/><path d="M16.5 6.2a3 3 0 0 1 0 5.6M18 14.6c2.1.5 3.4 2.2 3.4 4.4"/></symbol>
         <symbol id="i-grafica" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7.5" y="12" width="3" height="5" rx="1"/><rect x="13" y="8.5" width="3" height="8.5" rx="1"/><rect x="18" y="5.5" width="3" height="11.5" rx="1"/></symbol>
         <symbol id="i-buscar" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
@@ -2743,7 +2803,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
             <form id="ficha-form">
                 <!-- 1. DATOS PERSONALES -->
                 <div class="section">
-                    <h2 class="section-title"><span>1</span> Datos Personales</h2>
+                    <h2 class="section-title"><span><svg class="ico" aria-hidden="true"><use href="#i-persona"/></svg></span> Datos Personales</h2>
                     <div class="grid-2">
                         <div class="form-group full">
                             <label for="nombres">Nombres y Apellidos *</label>
@@ -2846,48 +2906,59 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                                    placeholder="Área de trabajo">
                             <p class="hint">Escríbela tal como se llama el área en la empresa.</p>
                         </div>
-                        <!-- DIRECCIÓN: Municipio / Parroquia / Comuna -->
-                        <div class="form-group">
-                            <label for="municipio">Municipio *</label>
-                            <select id="municipio" name="municipio" required>
-                                <option value="">Seleccione...</option>
-                                <option value="simon_bolivar">Simón Bolívar</option>
-                                <option value="otro">Otro municipio</option>
-                            </select>
-                        </div>
+                        <!-- ===== LUGAR DE HABITACIÓN (segmento aparte de la dirección) ===== -->
+                        <div class="bloque-habita">
+                            <div class="bloque-habita-cabecera">
+                                <span class="bloque-habita-icono"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-casa"/></svg></span>
+                                <div>
+                                    <h3 class="bloque-habita-titulo">Lugar de Habitación</h3>
+                                    <p class="bloque-habita-sub">Municipio, parroquia, comuna y dirección de donde habita actualmente.</p>
+                                </div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label for="municipio">Municipio donde habita *</label>
+                                    <select id="municipio" name="municipio" required>
+                                        <option value="">Seleccione...</option>
+                                        <option value="simon_bolivar">Simón Bolívar</option>
+                                        <option value="otro">Otro municipio</option>
+                                    </select>
+                                </div>
 
-                        <div class="form-group" id="otro-municipio-group" style="display:none;">
-                            <label for="municipio_otro">Especifique el Municipio *</label>
-                            <input type="text" id="municipio_otro" name="municipio_otro" placeholder="Nombre del municipio">
-                        </div>
+                                <div class="form-group" id="otro-municipio-group" style="display:none;">
+                                    <label for="municipio_otro">Especifique el Municipio donde habita *</label>
+                                    <input type="text" id="municipio_otro" name="municipio_otro" placeholder="Nombre del municipio donde habita">
+                                </div>
 
-                        <div class="form-group">
-                            <label for="parroquia">Parroquia *</label>
-                            <select id="parroquia" name="parroquia" required>
-                                <option value="">Seleccione municipio primero...</option>
-                            </select>
-                        </div>
+                                <div class="form-group">
+                                    <label for="parroquia">Parroquia donde habita *</label>
+                                    <select id="parroquia" name="parroquia" required>
+                                        <option value="">Seleccione municipio primero...</option>
+                                    </select>
+                                </div>
 
-                        <div class="form-group" id="parroquia-otro-group" style="display:none;">
-                            <label for="parroquia_otro">Especifique la Parroquia *</label>
-                            <input type="text" id="parroquia_otro" name="parroquia_otro" placeholder="Nombre de la parroquia">
-                        </div>
+                                <div class="form-group" id="parroquia-otro-group" style="display:none;">
+                                    <label for="parroquia_otro">Especifique la Parroquia donde habita *</label>
+                                    <input type="text" id="parroquia_otro" name="parroquia_otro" placeholder="Nombre de la parroquia donde habita">
+                                </div>
 
-                        <div class="form-group full">
-                            <label for="comuna">Comuna *</label>
-                            <select id="comuna" name="comuna" required>
-                                <option value="">Seleccione municipio primero...</option>
-                            </select>
-                        </div>
+                                <div class="form-group full">
+                                    <label for="comuna">Comuna donde habita *</label>
+                                    <select id="comuna" name="comuna" required>
+                                        <option value="">Seleccione municipio primero...</option>
+                                    </select>
+                                </div>
 
-                        <div class="form-group full" id="comuna-otro-group" style="display:none;">
-                            <label for="comuna_otro">Especifique la Comuna *</label>
-                            <input type="text" id="comuna_otro" name="comuna_otro" placeholder="Nombre de la comuna">
-                        </div>
+                                <div class="form-group full" id="comuna-otro-group" style="display:none;">
+                                    <label for="comuna_otro">Especifique la Comuna donde habita *</label>
+                                    <input type="text" id="comuna_otro" name="comuna_otro" placeholder="Nombre de la comuna donde habita">
+                                </div>
 
-                        <div class="form-group full">
-                            <label for="direccion">Dirección detallada *</label>
-                            <textarea id="direccion" name="direccion" required placeholder="Calle, sector, punto de referencia..."></textarea>
+                                <div class="form-group full">
+                                    <label for="direccion">Dirección detallada de donde habita *</label>
+                                    <textarea id="direccion" name="direccion" required placeholder="Calle, sector, punto de referencia de donde habita..."></textarea>
+                                </div>
+                            </div>
                         </div>
 
                         </div>
@@ -2895,7 +2966,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 
                 <!-- 2. CONDICIÓN DE SALUD Y DISCAPACIDAD (unificado) -->
                 <div class="section">
-                    <h2 class="section-title"><span>2</span> Condición de Salud y Discapacidad</h2>
+                    <h2 class="section-title"><span><svg class="ico" aria-hidden="true"><use href="#i-salud"/></svg></span> Condición de Salud y Discapacidad</h2>
                     <div class="grid-2">
                         <div class="form-group">
                             <label for="tiene_condicion">¿Tiene alguna condición de salud o discapacidad? *</label>
@@ -2966,7 +3037,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 
                 <!-- 3. DATOS DE PROGENITORES (tarjetas) -->
                 <div class="section">
-                    <h2 class="section-title"><span>3</span> Datos de Progenitores</h2>
+                    <h2 class="section-title"><span><svg class="ico" aria-hidden="true"><use href="#i-personas"/></svg></span> Datos de Progenitores</h2>
                     <p class="hint" style="margin-bottom:14px;">Puede agregar padre, madre u otros progenitores.</p>
                     <div class="familiares-lista" id="progenitores-lista">
                         <div class="empty-msg" id="progenitores-empty">No se han agregado registros</div>
@@ -2976,7 +3047,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 
                 <!-- 4. DATOS DE LA PAREJA (tarjetas) -->
                 <div class="section">
-                    <h2 class="section-title"><span>4</span> Datos de la Pareja</h2>
+                    <h2 class="section-title"><span><svg class="ico" aria-hidden="true"><use href="#i-pareja"/></svg></span> Datos de la Pareja</h2>
                     <p class="hint" style="margin-bottom:14px;">Complete solo si aplica.</p>
                     <div class="familiares-lista" id="pareja-lista">
                         <div class="empty-msg" id="pareja-empty">No se han agregado registros</div>
@@ -2986,7 +3057,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 
                 <!-- 5. DATOS DE HIJOS (tarjetas) -->
                 <div class="section">
-                    <h2 class="section-title"><span>5</span> Datos de Hijos</h2>
+                    <h2 class="section-title"><span><svg class="ico" aria-hidden="true"><use href="#i-hijos"/></svg></span> Datos de Hijos</h2>
                     <p class="hint" style="margin-bottom:14px;">Puede agregar todos los hijos que desee.</p>
                     <div class="familiares-lista" id="hijos-lista">
                         <div class="empty-msg" id="hijos-empty">No se han agregado registros</div>
@@ -2996,12 +3067,12 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 
                 <!-- 6. FOTOGRAFÍA DEL TRABAJADOR (obligatoria) -->
                 <div class="section" id="seccion-foto">
-                    <h2 class="section-title"><span>6</span> Fotografía del Trabajador</h2>
+                    <h2 class="section-title"><span><svg class="ico" aria-hidden="true"><use href="#i-camara"/></svg></span> Fotografía del Trabajador</h2>
                     <div class="foto-trabajador" id="foto-trabajador">
                         <div class="foto-miniatura" id="foto-miniatura">Sin foto</div>
                         <div class="foto-textos">
                             <strong>Fotografía del trabajador *</strong>
-                            <p>Tome la fotografía de vista frontal, del busto hacia arriba y, de preferencia, con fondo o pared blanca o de un solo color. Es obligatoria para poder guardar la ficha.</p>
+                            <p>Tome la fotografía de vista frontal, de medio cuerpo hacia arriba y, de preferencia, con fondo o pared blanca o de un solo color. Es obligatoria para poder guardar la ficha.</p>
                             <div class="foto-botones">
                                 <button type="button" class="btn-admin btn-admin-success" id="btn-foto-elegir">
                                     <svg class="ico ico--sm" aria-hidden="true"><use href="#i-camara"/></svg> Tomar foto
@@ -3106,7 +3177,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                                     <th style="padding:12px 10px; text-align:left; font-weight:600;">Edad</th>
                                     <th style="padding:12px 10px; text-align:left; font-weight:600; white-space:nowrap;">Nivel Estudio</th>
                                     <th style="padding:12px 10px; text-align:left; font-weight:600;">Correo</th>
-                                    <th style="padding:12px 10px; text-align:left; font-weight:600;">Municipio</th>
+                                    <th style="padding:12px 10px; text-align:left; font-weight:600;">Municipio donde habita</th>
                                     <th style="padding:12px 10px; text-align:left; font-weight:600;">Condición/Disc.</th>
                                     <th style="padding:12px 10px; text-align:left; font-weight:600;"># Progen.</th>
                                     <th style="padding:12px 10px; text-align:left; font-weight:600;">Pareja</th>
@@ -6277,10 +6348,10 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                 { t: 'Tipo de Nómina', w: 16, g: 'datos', v: f => tipoContratacionTexto(f) },
                 { t: 'Área de Trabajo', w: 22, g: 'datos', v: f => areaTrabajoTexto(f) },
                 { t: 'Fecha de Registro', w: 20, g: 'datos', v: f => fechaRegistroExcel(f) },
-                { t: 'Municipio', w: 16, g: 'direccion', v: f => municipioExcel(f) },
-                { t: 'Parroquia', w: 16, g: 'direccion', v: f => textoExcel(f.parroquia_otro || f.parroquia || '') },
-                { t: 'Comuna', w: 16, g: 'direccion', v: f => textoExcel(f.comuna_otro || f.comuna || '') },
-                { t: 'Dirección', w: 34, g: 'direccion', v: f => textoExcel(f.direccion) },
+                { t: 'Municipio donde habita', w: 22, g: 'direccion', v: f => municipioExcel(f) },
+                { t: 'Parroquia donde habita', w: 22, g: 'direccion', v: f => textoExcel(f.parroquia_otro || f.parroquia || '') },
+                { t: 'Comuna donde habita', w: 20, g: 'direccion', v: f => textoExcel(f.comuna_otro || f.comuna || '') },
+                { t: 'Dirección donde habita', w: 38, g: 'direccion', v: f => textoExcel(f.direccion) },
                 { t: '¿Tiene condición?', w: 13, g: 'salud', v: f => (f.condicion_salud === 'si' ? 'Sí' : 'No') },
                 { t: 'Condición / Discapacidad', w: 22, g: 'salud', v: f => textoExcel(f.condicion_cual) },
                 { t: 'Tipo', w: 15, g: 'salud', v: f => etiquetaTipoCondicion(f.condicion_tipo) },
@@ -6436,7 +6507,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
         };
         const EXCEL_GRUPOS = {
             datos: 'DATOS PERSONALES Y LABORALES',
-            direccion: 'DIRECCIÓN RESIDENCIAL',
+            direccion: 'LUGAR DE HABITACIÓN',
             salud: 'CONDICIÓN DE SALUD',
             resumen: 'RESUMEN FAMILIAR',
             familia: 'ENTORNO FAMILIAR',
@@ -7712,11 +7783,11 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
                         <div class="planilla-item planilla-item--sin-arriba" style="grid-row:5; grid-column:4 / span 3;"><span class="planilla-label">Tipo de Nómina</span><span class="planilla-value">${escaparHtml(tipoContratacionTexto(f))}</span></div>
 
                         <div class="planilla-item" style="grid-row:6; grid-column:1 / span 2;"><span class="planilla-label">Área de Trabajo</span><span class="planilla-value">${escaparHtml(areaTrabajoTexto(f))}</span></div>
-                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:6; grid-column:3 / span 2;"><span class="planilla-label">Municipio</span><span class="planilla-value">${escaparHtml(f.municipio==='otro'? nombreLugar(f.municipio_otro) : nombreLugar(f.municipio))}</span></div>
-                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:6; grid-column:5 / span 2;"><span class="planilla-label">Parroquia</span><span class="planilla-value">${escaparHtml(nombreLugar(f.parroquia_otro||f.parroquia))}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:6; grid-column:3 / span 2;"><span class="planilla-label">Municipio donde habita</span><span class="planilla-value">${escaparHtml(f.municipio==='otro'? nombreLugar(f.municipio_otro) : nombreLugar(f.municipio))}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:6; grid-column:5 / span 2;"><span class="planilla-label">Parroquia donde habita</span><span class="planilla-value">${escaparHtml(nombreLugar(f.parroquia_otro||f.parroquia))}</span></div>
 
-                        <div class="planilla-item" style="grid-row:7; grid-column:1 / span 2;"><span class="planilla-label">Comuna</span><span class="planilla-value">${escaparHtml(nombreLugar(f.comuna_otro||f.comuna))}</span></div>
-                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:7; grid-column:3 / span 4;"><span class="planilla-label">Dirección detallada</span><span class="planilla-value">${escaparHtml(f.direccion)}</span></div>
+                        <div class="planilla-item" style="grid-row:7; grid-column:1 / span 2;"><span class="planilla-label">Comuna donde habita</span><span class="planilla-value">${escaparHtml(nombreLugar(f.comuna_otro||f.comuna))}</span></div>
+                        <div class="planilla-item planilla-item--sin-arriba" style="grid-row:7; grid-column:3 / span 4;"><span class="planilla-label">Dirección donde habita</span><span class="planilla-value">${escaparHtml(f.direccion)}</span></div>
                     </div>
                 </div>
                 <div class="planilla-section">
@@ -9001,5 +9072,5 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
             });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ffdda6aa727456',t:'MTc5MjkxNzA5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a50b6f511ec667b7',t:'MTc5MzAzODQwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ce11b58f85a4b8',t:'MTc5MjM5NDkzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4ffdda6aa727456',t:'MTc5MjkxNzA5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a50b6f511ec667b7',t:'MTc5MzAzODQwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a50e3a957fb2e8e8',t:'MTc5MzA2NzcwMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
